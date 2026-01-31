@@ -216,8 +216,8 @@ function CategoryFilter({
 
   return (
     <div className="sticky z-50 border-b border-[var(--border)] bg-[var(--surface-veil)] backdrop-blur" style={{ top }}>
-      <div className="mx-auto max-w-5xl px-4 py-3">
-        <div className="no-scrollbar flex gap-2 overflow-x-auto">
+      <div className="mx-auto max-w-5xl">
+        <div className="no-scrollbar flex gap-2 overflow-x-auto px-4 py-3">
           {categories.map((cat) => (
             <button
               key={cat.id}
