@@ -3,7 +3,7 @@
 import Image from "next/image";
 
 export type ProductCardProps = {
-  id: number;
+  id: string;
   name: string;
   category: string;
   price: number | string;

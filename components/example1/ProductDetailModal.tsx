@@ -6,8 +6,8 @@ import type { Product } from "@/components/products/data";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
-  MinusIcon,
-  PlusIcon,
+  // MinusIcon,
+  // PlusIcon,
   XIcon,
 } from "./icons";
 
@@ -18,7 +18,7 @@ type Props = {
 
 export function ProductDetailModal({ product, onClose }: Props) {
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
-  const [quantity, setQuantity] = useState(1);
+  // const [quantity, setQuantity] = useState(1);
   const [index, setIndex] = useState(0);
 
   if (!product) return null;
