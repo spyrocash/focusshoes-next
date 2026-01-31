@@ -38,7 +38,7 @@ export function ProductDetailModal({ product, onClose }: Props) {
         <header className="sticky top-0 z-20 flex items-center justify-between border-b border-[var(--border)] bg-[var(--surface-veil)] px-4 py-3 backdrop-blur">
           <button
             onClick={onClose}
-            className="rounded-full bg-white/10 p-2 shadow-sm transition hover:bg-white/20"
+            className="bg-white/10 p-2 transition hover:bg-white/20"
             aria-label="ปิด"
           >
             <XIcon className="h-5 w-5" />
@@ -168,12 +168,22 @@ export function ProductDetailModal({ product, onClose }: Props) {
           </div> */}
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <button className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-4 py-3 text-[var(--primary-foreground)] shadow-sm transition hover:bg-[#9f1c1d]">
+            <a
+              href="https://line.me/R/ti/p/focusshoes"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-4 py-3 text-[var(--primary-foreground)] shadow-sm transition hover:bg-[#9f1c1d]"
+            >
               แชทสั่งซื้อ
-            </button>
-            <button className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border)] px-4 py-3 text-[var(--foreground)] transition hover:border-white/30">
+            </a>
+            <a
+              href="tel:+66926644624"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border)] px-4 py-3 text-[var(--foreground)] transition hover:border-white/30"
+            >
               โทรสอบถาม
-            </button>
+            </a>
           </div>
         </div>
       </div>
