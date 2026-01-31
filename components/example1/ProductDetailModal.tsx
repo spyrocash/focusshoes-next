@@ -2,28 +2,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import type { Product } from "@/components/products/data";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   MinusIcon,
   PlusIcon,
-  ShoppingCartIcon,
-  StarIcon,
   XIcon,
 } from "./icons";
-
-export type Product = {
-  id: number;
-  name: string;
-  category: string;
-  price: number;
-  rating: number;
-  images: string[];
-  inStock: boolean;
-  description: string;
-  sizes: number[];
-  material: string;
-};
 
 type Props = {
   product: Product | null;
@@ -49,13 +35,17 @@ export function ProductDetailModal({ product, onClose }: Props) {
       <div className="absolute inset-0 bg-black/60 backdrop-blur" onClick={onClose} />
 
       <div className="relative h-full w-full overflow-y-auto border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 z-10 rounded-full bg-white/10 p-2 shadow-lg backdrop-blur-sm transition-colors hover:bg-white/20"
-          aria-label="ปิด"
-        >
-          <XIcon className="h-5 w-5" />
-        </button>
+        <header className="sticky top-0 z-20 flex items-center justify-between border-b border-[var(--border)] bg-[var(--surface-veil)] px-4 py-3 backdrop-blur">
+          <button
+            onClick={onClose}
+            className="rounded-full bg-white/10 p-2 shadow-sm transition hover:bg-white/20"
+            aria-label="ปิด"
+          >
+            <XIcon className="h-5 w-5" />
+          </button>
+          <div className="text-sm text-[var(--muted)]">{product.name}</div>
+          <div className="w-9" />
+        </header>
 
         <div className="relative bg-[var(--surface)]">
           <div className="relative aspect-square">
@@ -84,11 +74,30 @@ export function ProductDetailModal({ product, onClose }: Props) {
               >
                 <ChevronRightIcon className="h-5 w-5" />
               </button>
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-sm text-white backdrop-blur-sm">
+              {/* <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-sm text-white backdrop-blur-sm">
                 {index + 1} / {product.images.length}
-              </div>
+              </div> */}
             </>
           )}
+          <div className="flex gap-2 overflow-x-auto bg-[var(--surface)] px-4 py-3">
+            {product.images.map((src, i) => (
+              <button
+                key={src}
+                onClick={() => setIndex(i)}
+                className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border ${
+                  i === index ? "border-[var(--primary)]" : "border-[var(--border)]"
+                }`}
+              >
+                <Image
+                  src={src}
+                  alt={`${product.name} thumb ${i + 1}`}
+                  fill
+                  className="object-cover"
+                  sizes="64px"
+                />
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="space-y-4 p-4">
@@ -97,28 +106,13 @@ export function ProductDetailModal({ product, onClose }: Props) {
             <h2 className="text-xl font-semibold text-[var(--foreground)]">{product.name}</h2>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              {[...Array(5)].map((_, i) => (
-                <StarIcon
-                  key={i}
-                  className={`h-4 w-4 ${
-                    i < product.rating ? "text-yellow-400" : "text-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-sm text-[var(--muted)]">({product.rating}.0)</span>
-            <span className="text-sm text-[var(--muted)]">• 127 รีวิว</span>
-          </div>
-
           <div className="flex items-end gap-2">
             <span className="text-3xl font-bold text-[var(--primary)]">
-              ฿{product.price.toLocaleString()}
+              ฿{Number(product.price).toLocaleString("th-TH")}
             </span>
-            <span className="mb-1 text-lg text-[var(--muted)] line-through">
-              ฿{(product.price * 1.3).toLocaleString()}
-            </span>
+            {/* <span className="mb-1 text-lg text-[var(--muted)] line-through">
+              ฿{Number(product.price) * 1.3}
+            </span> */}
           </div>
 
           <div className="flex items-center gap-2 text-sm">
@@ -152,7 +146,7 @@ export function ProductDetailModal({ product, onClose }: Props) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <div className="flex items-center rounded-lg border border-white/10">
               <button
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -171,15 +165,14 @@ export function ProductDetailModal({ product, onClose }: Props) {
               </button>
             </div>
             <div className="text-sm text-[var(--muted)]">พร้อมส่ง</div>
-          </div>
+          </div> */}
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <button className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-4 py-3 text-[var(--primary-foreground)] shadow-sm transition hover:bg-[#9f1c1d]">
-              <ShoppingCartIcon className="h-4 w-4" />
-              เพิ่มลงตะกร้า
+              แชทสั่งซื้อ
             </button>
             <button className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border)] px-4 py-3 text-[var(--foreground)] transition hover:border-white/30">
-              แชทสั่งซื้อ
+              โทรสอบถาม
             </button>
           </div>
         </div>

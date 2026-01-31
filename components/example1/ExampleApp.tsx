@@ -12,115 +12,18 @@ import {
   XIcon,
 } from "./icons";
 import { ProductCard } from "./ProductCard";
-import { ProductDetailModal, type Product } from "./ProductDetailModal";
+import { ProductDetailModal } from "./ProductDetailModal";
+import { products as catalogProducts, type Product } from "@/components/products/data";
 
 const categories = [
   { id: "all", name: "ทั้งหมด" },
-  { id: "women", name: "รองเท้าสตรี" },
-  { id: "officer", name: "ข้าราชการ" },
-  { id: "nurse", name: "พยาบาล" },
+  ...Array.from(new Set(catalogProducts.map((p) => p.category))).map((c) => ({
+    id: c,
+    name: c,
+  })),
 ];
 
-const products: Product[] = [
-  {
-    id: 1,
-    name: "รองเท้าคัชชูหนังแท้ สีดำ ส้นเตี้ย สำหรับข้าราชการ",
-    category: "ข้าราชการ",
-    price: 990,
-    rating: 5,
-    images: [
-      "https://images.unsplash.com/photo-1708242355178-d8c929b01a9d?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1682329782559-c8084b62733b?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1763888647863-d6d0c7383151?auto=format&fit=crop&w=1200&q=80",
-    ],
-    inStock: true,
-    description:
-      "รองเท้าคัชชูหนังแท้คุณภาพสูง ออกแบบมาเพื่อข้าราชการโดยเฉพาะ ส้นเตี้ยสวมใส่สบาย ไม่ปวดเท้าแม้ใช้งานทั้งวัน พื้นรองเท้านุ่ม รองรับการเดินยาว ทรงสวยเหมาะกับการทำงาน",
-    sizes: [35, 36, 37, 38, 39, 40],
-    material: "หนังแท้ 100%",
-  },
-  {
-    id: 2,
-    name: "รองเท้าพยาบาล หนังนิ่ม สีขาว สวมใส่สบาย ไม่ปวดเท้า",
-    category: "พยาบาล",
-    price: 850,
-    rating: 5,
-    images: [
-      "https://images.unsplash.com/photo-1768726051720-998290619ae0?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1663151860122-4890a08dc22b?auto=format&fit=crop&w=1200&q=80",
-    ],
-    inStock: true,
-    description:
-      "รองเท้าพยาบาลหนังนิ่ม ออกแบบเพื่อการใช้งานในโรงพยาบาล สีขาวสะอาดตา สวมใส่สบายแม้ยืนทำงานนานๆ พื้นรองเท้าใช้วัสดุคุณภาพสูง กันลื่น ทนทาน",
-    sizes: [35, 36, 37, 38, 39, 40, 41],
-    material: "หนังนิ่มคุณภาพ",
-  },
-  {
-    id: 3,
-    name: "รองเท้าออฟฟิศ หนังแท้ ทรงสวย เหมาะกับการทำงาน",
-    category: "รองเท้าสตรี",
-    price: 1290,
-    rating: 5,
-    images: [
-      "https://images.unsplash.com/photo-1609559756315-17996df12f21?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1621665422129-a03cc387bc7d?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1621703730619-14efc794f8de?auto=format&fit=crop&w=1200&q=80",
-    ],
-    inStock: true,
-    description:
-      "รองเท้าออฟฟิศสุดหรู หนังแท้นุ่ม ทรงสวยงาม เพิ่มความมั่นใจในการทำงาน ดีไซน์ทันสมัย เข้ากับชุดทำงานทุกแบบ สวมใส่สบายไม่เมื่อยเท้า",
-    sizes: [35, 36, 37, 38, 39, 40],
-    material: "หนังแท้ 100%",
-  },
-  {
-    id: 4,
-    name: "รองเท้าส้นสูง หนังแท้ เบา สบายเท้า สวยหรู",
-    category: "รองเท้าสตรี",
-    price: 1490,
-    rating: 5,
-    images: [
-      "https://images.unsplash.com/photo-1553808373-b2c5b7ddb117?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1760473004054-eb0fd50ea9ae?auto=format&fit=crop&w=1200&q=80",
-    ],
-    inStock: true,
-    description:
-      "รองเท้าส้นสูงหนังแท้ ออกแบบพิเศษให้เบา สวมใส่สบาย ส้นสูงแต่ไม่เมื่อยเท้า เหมาะกับงานปาร์ตี้ งานแต่งงาน หรือโอกาสพิเศษ ทรงสวยเพิ่มความมั่นใจ",
-    sizes: [35, 36, 37, 38, 39],
-    material: "หนังแท้ 100%",
-  },
-  {
-    id: 5,
-    name: "รองเท้าหุ้มส้น หนังนิ่ม พื้นเบา สวมใส่สบายตลอดวัน",
-    category: "รองเท้าสตรี",
-    price: 990,
-    rating: 4,
-    images: [
-      "https://images.unsplash.com/photo-1576133385309-203e67da8e58?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1708962000105-849e984e69a8?auto=format&fit=crop&w=1200&q=80",
-    ],
-    inStock: true,
-    description:
-      "รองเท้าหุ้มส้นหนังนิ่ม ทรงทันสมัย พื้นนุ่มเบา ใส่สบายตลอดวัน เหมาะกับการใช้งานประจำวัน ไปทำงาน เดินเล่น ช้อปปิ้ง คุณภาพดีราคาไม่แพง",
-    sizes: [35, 36, 37, 38, 39, 40, 41],
-    material: "หนังนิ่มคุณภาพ",
-  },
-  {
-    id: 6,
-    name: "รองเท้าคัชชู หนังแท้ ทรงคลาสสิก เหมาะกับทุกโอกาส",
-    category: "รองเท้าสตรี",
-    price: 1190,
-    rating: 5,
-    images: [
-      "https://images.unsplash.com/photo-1490243248048-8a68b3b77805?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1653868250450-b83e6263d427?auto=format&fit=crop&w=1200&q=80",
-    ],
-    inStock: false,
-    description:
-      "รองเท้าคัชชูคลาสสิก หนังแท้คุณภาพเยี่ยม ทรงสวยเหนือกาลเวลา เข้ากับทุกสไตล์การแต่ง เหมาะกับทั้งงานทางการและงานสบายๆ ของขวัญที่ดีสำหรับคนพิเศษ",
-    sizes: [35, 36, 37, 38, 39, 40],
-    material: "หนังแท้ 100%",
-  },
-];
+const products: Product[] = catalogProducts;
 
 export function ExampleApp() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -171,7 +74,7 @@ export function ExampleApp() {
           ))}
         </div>
       </main>
-      <TailorCTA />
+      {/* <TailorCTA /> */}
       <Footer />
       {selectedProduct && (
         <ProductDetailModal
@@ -361,16 +264,26 @@ function Footer() {
         <h4 className="mb-2 font-semibold text-[var(--foreground)]">Focus Shoes</h4>
         <p className="mb-3 text-sm text-[var(--muted)]">ร้านรองเท้าหนังแท้ คุณภาพดี ราคาโรงงาน</p>
         <div className="space-y-1 text-sm">
-          <p>📞 โทร: 092-664-4624</p>
           <p>
-            💬 LINE:{" "}
+            📞{" "}
             <a
-              href="https://line.me/R/ti/p/@FocusShoes"
+              href="tel:+66926644624"
               className="underline-offset-2 hover:underline text-[var(--foreground)]"
               target="_blank"
               rel="noopener noreferrer"
             >
-              FocusShoes
+              092-664-4624
+            </a>
+          </p>
+          <p>
+            💬 LINE:{" "}
+            <a
+              href="https://line.me/R/ti/p/focusshoes"
+              className="underline-offset-2 hover:underline text-[var(--foreground)]"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              focusshoes
             </a>
           </p>
           <p>
