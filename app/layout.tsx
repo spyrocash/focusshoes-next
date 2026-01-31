@@ -28,16 +28,16 @@ export const metadata: Metadata = {
     "โรงงานรองเท้า",
     "Focus Shoes",
   ],
-  metadataBase: new URL("https://focusshoes.example.com"),
+  metadataBase: new URL("http://www.focusshoes-th.com/"),
   openGraph: {
     title: "Focus Shoes | รองเท้าสตรีหนังแท้ ใส่สบาย",
     description:
       "รองเท้าผู้หญิงหนังแท้จากโรงงาน Focus Shoes สวย สุภาพ ใส่สบาย สั่งตัดได้ตรงใจ",
-    url: "https://focusshoes.example.com",
+    url: "http://www.focusshoes-th.com/",
     siteName: "Focus Shoes",
     images: [
       {
-        url: "/og-cover.png",
+        url: "/logo_focusshoes_1-1.jpg",
         width: 1200,
         height: 630,
         alt: "Focus Shoes catalog",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Focus Shoes | รองเท้าสตรีหนังแท้",
     description: "สวย ใส่สบาย ราคาโรงงาน พร้อมสั่งตัดเฉพาะคุณ",
-    images: ["/og-cover.png"],
+    images: ["/logo_focusshoes_1-1.jpg"],
   },
 };
 
