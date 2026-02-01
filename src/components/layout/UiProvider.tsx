@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_LOCALE,
   LOCALE_STORAGE_KEY,
-  detectLocale,
+  // detectLocale,
   type Locale,
 } from "@/i18n/locales";
 
@@ -22,18 +22,18 @@ export function UiProvider({ children }: { children: ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  // useEffect(() => {
+  //   if (typeof window === "undefined") return;
 
-    const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
-    const candidates: string[] = [];
-    if (stored) candidates.push(stored);
-    if (navigator.languages?.length) candidates.push(...navigator.languages);
-    if (navigator.language) candidates.push(navigator.language);
+  //   const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
+  //   const candidates: string[] = [];
+  //   if (stored) candidates.push(stored);
+  //   if (navigator.languages?.length) candidates.push(...navigator.languages);
+  //   if (navigator.language) candidates.push(navigator.language);
 
-    const detected = detectLocale(candidates);
-    setLocale(detected);
-  }, []);
+  //   const detected = detectLocale(candidates);
+  //   setLocale(detected);
+  // }, []);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
