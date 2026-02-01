@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Kanit } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "@/styles/globals.css";
 
 const THEME: "dark" | "light" = "dark"; // เปลี่ยนค่าเป็น "light" ได้จากโค้ดเพื่อสลับธีม
@@ -31,8 +32,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("http://www.focusshoes-th.com/"),
   openGraph: {
     title: "Focus Shoes | รองเท้าสตรีหนังแท้ ใส่สบาย",
-    description:
-      "รองเท้าผู้หญิงหนังแท้จากโรงงาน Focus Shoes สวย สุภาพ ใส่สบาย สั่งตัดได้ตรงใจ",
+    description: "รองเท้าผู้หญิงหนังแท้จากโรงงาน Focus Shoes สวย สุภาพ ใส่สบาย สั่งตัดได้ตรงใจ",
     url: "http://www.focusshoes-th.com/",
     siteName: "Focus Shoes",
     images: [
@@ -61,11 +61,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th">
-      <body
-        data-theme={THEME}
-        className={`${display.variable} ${sans.variable} antialiased`}
-      >
+      <body data-theme={THEME} className={`${display.variable} ${sans.variable} antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );

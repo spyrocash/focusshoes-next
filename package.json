@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@line/liff": "^2.27.3",
+    "@vercel/analytics": "^1.6.1",
     "easy-peasy": "^6.1.0",
     "next": "16.1.6",
     "react": "19.2.3",
