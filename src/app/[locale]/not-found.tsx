@@ -1,9 +1,11 @@
 "use client";
 
 import { useTranslations } from "@/i18n/useTranslations";
+import { useUi } from "@/components/layout/UiProvider";
 
 export default function NotFound() {
   const t = useTranslations();
+  const { locale } = useUi();
 
   return (
     <main className="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-6 text-center text-[var(--foreground)]">
@@ -13,7 +15,7 @@ export default function NotFound() {
         {t("notFoundDescription")}
       </p>
       <a
-        href="/"
+        href={`/${locale}`}
         className="mt-6 inline-flex items-center rounded-full border border-[var(--border)] px-5 py-2 text-sm font-medium transition hover:border-white/30"
       >
         {t("notFoundCta")}

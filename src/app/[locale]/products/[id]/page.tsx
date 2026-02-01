@@ -1,17 +1,18 @@
 import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/products";
 import { ProductDetailPage } from "@/features/products/ProductDetailPage";
-
-type Params = {
-  id: string;
-};
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES, type Locale } from "@/i18n/locales";
+import { messages } from "@/i18n/messages";
 
 type PageProps = {
-  params: Promise<Params>;
+  params: Promise<{ locale: string; id: string }>;
 };
 
 export default async function Page({ params }: PageProps) {
-  const { id } = await params;
+  const { id, locale: localeParam } = await params;
+  const locale = SUPPORTED_LOCALES.includes(localeParam as Locale)
+    ? (localeParam as Locale)
+    : DEFAULT_LOCALE;
   const product = getProductById(decodeURIComponent(id));
 
   if (!product) {
@@ -21,7 +22,8 @@ export default async function Page({ params }: PageProps) {
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ??
     "https://focusshoes.vercel.app";
-  const productUrl = `${siteUrl}/products/${encodeURIComponent(product.id)}`;
+  const productUrl = `${siteUrl}/${locale}/products/${encodeURIComponent(product.id)}`;
+  const homeUrl = `${siteUrl}/${locale}`;
   const images = product.images.map((image) =>
     image.startsWith("http") ? image : `${siteUrl}${image}`,
   );
@@ -57,8 +59,8 @@ export default async function Page({ params }: PageProps) {
       {
         "@type": "ListItem",
         position: 1,
-        name: "หน้าแรก",
-        item: siteUrl,
+        name: messages[locale].notFoundCta,
+        item: homeUrl,
       },
       {
         "@type": "ListItem",

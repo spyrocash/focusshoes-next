@@ -3,9 +3,6 @@ import type { ReactNode } from "react";
 import { DM_Sans, Kanit } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
-import { UiProvider } from "@/components/layout/UiProvider";
 import "@/styles/globals.css";
 
 const THEME: "dark" | "light" = "dark"; // เปลี่ยนค่าเป็น "light" ได้จากโค้ดเพื่อสลับธีม
@@ -61,20 +58,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  modal,
 }: Readonly<{
   children: ReactNode;
-  modal: ReactNode;
 }>) {
   return (
     <html lang="th">
       <body data-theme={THEME} className={`${display.variable} ${sans.variable} antialiased`}>
-        <UiProvider>
-          <Header />
-          {children}
-          <Footer />
-          {modal}
-        </UiProvider>
+        {children}
         <Analytics />
         <SpeedInsights />
       </body>

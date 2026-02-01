@@ -2,12 +2,8 @@ import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/products";
 import { ProductDetailModalRoute } from "@/features/products/ProductDetailModalRoute";
 
-type Params = {
-  id: string;
-};
-
 type PageProps = {
-  params: Promise<Params>;
+  params: Promise<{ locale: string; id: string }>;
 };
 
 export default async function Page({ params }: PageProps) {

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ClockIcon,
   FacebookIcon,
@@ -19,6 +20,9 @@ export function Header() {
   const { menuOpen, setMenuOpen, locale, setLocale } = useUi();
   const [languageOpen, setLanguageOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const t = useTranslations();
 
   const activeLocale = useMemo(() => LOCALE_META[locale], [locale]);
@@ -39,6 +43,11 @@ export function Header() {
   const handleLocaleSelect = (value: Locale) => {
     setLocale(value);
     setLanguageOpen(false);
+    const segments = pathname.split("/").filter(Boolean);
+    const rest = segments.length > 0 ? segments.slice(1).join("/") : "";
+    const nextPath = rest ? `/${value}/${rest}` : `/${value}`;
+    const query = searchParams.toString();
+    router.push(query ? `${nextPath}?${query}` : nextPath);
   };
 
   return (

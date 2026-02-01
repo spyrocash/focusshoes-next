@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "@/i18n/useTranslations";
+import { useUi } from "@/components/layout/UiProvider";
 
 type ErrorProps = {
   error: Error & { digest?: string };
@@ -9,6 +10,7 @@ type ErrorProps = {
 
 export default function Error({ error, reset }: ErrorProps) {
   const t = useTranslations();
+  const { locale } = useUi();
 
   return (
     <main className="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-6 text-center text-[var(--foreground)]">
@@ -28,7 +30,7 @@ export default function Error({ error, reset }: ErrorProps) {
           {t("errorRetry")}
         </button>
         <a
-          href="/"
+          href={`/${locale}`}
           className="inline-flex items-center justify-center rounded-full border border-[var(--border)] px-5 py-2 text-sm font-medium transition hover:border-white/30"
         >
           {t("errorBackHome")}

@@ -140,7 +140,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
           </button>
         ) : (
           <Link
-            href="/"
+            href={`/${locale}`}
             className="bg-white/10 p-2 transition hover:bg-white/20"
           >
             <XIcon className="h-5 w-5" />

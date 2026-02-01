@@ -14,7 +14,7 @@ type HomeClientProps = {
 
 export function HomeClient({ products, hero }: HomeClientProps) {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const { menuOpen } = useUi();
+  const { menuOpen, locale } = useUi();
   const t = useTranslations();
 
   const categories = useMemo(
@@ -67,7 +67,7 @@ export function HomeClient({ products, hero }: HomeClientProps) {
               image={product.images[0]}
               inStock={product.inStock}
               priority={index < 4}
-              href={`/products/${product.id}`}
+              href={`/${locale}/products/${product.id}`}
             />
           ))}
         </div>
