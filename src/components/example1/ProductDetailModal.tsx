@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import liff from "@line/liff";
 import type { Product } from "@/components/products/data";
+import { useStoreActions, useStoreState } from "@/store/hooks";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -12,7 +14,7 @@ import {
 } from "./icons";
 
 type Props = {
-  product: Product | null;
+  product: Product;
   onClose: () => void;
 };
 
@@ -20,14 +22,94 @@ export function ProductDetailModal({ product, onClose }: Props) {
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   // const [quantity, setQuantity] = useState(1);
   const [index, setIndex] = useState(0);
+  const [sendStatus, setSendStatus] = useState<string | null>(null);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
 
-  if (!product) return null;
+  const liffReady = useStoreState((state) => state.liff.ready);
+  const liffInitializing = useStoreState((state) => state.liff.initializing);
+  const liffInitError = useStoreState((state) => state.liff.error);
+  const initLiff = useStoreActions((actions) => actions.liff.initLiff);
+
+  const liffId = process.env.NEXT_PUBLIC_LIFF_ID;
+
+  useEffect(() => {
+    setSendStatus(null);
+    setSendError(null);
+    setSending(false);
+    setSelectedSize(null);
+    setIndex(0);
+  }, [product.id]);
 
   const changeImage = (delta: number) => {
     setIndex((prev) => {
       const next = (prev + delta + product.images.length) % product.images.length;
       return next;
     });
+  };
+
+  const handleSendOrder = async () => {
+    if (!selectedSize) {
+      setSendError("กรุณาเลือกไซส์ก่อนสั่งซื้อ");
+      return;
+    }
+    if (!liffId) {
+      setSendError("ยังไม่ได้ตั้งค่า LIFF ID");
+      return;
+    }
+
+    setSending(true);
+    setSendStatus(null);
+    setSendError(null);
+
+    try {
+      if (!liffReady) {
+        const ready = await initLiff();
+        if (!ready) {
+          setSendError(liffInitError ?? "ไม่สามารถเริ่มต้น LIFF ได้");
+          return;
+        }
+      }
+
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+      }
+
+      const priceDisplay = Number(product.price).toLocaleString("th-TH");
+      const messageText = [
+        "สั่งซื้อสินค้า",
+        `สินค้า: ${product.name}`,
+        `หมวดหมู่: ${product.category}`,
+        `ราคา: ฿${priceDisplay}`,
+        `ไซส์: EU ${selectedSize}`,
+        `รหัสสินค้า: ${product.id}`,
+      ].join("\n");
+
+      if (liff.isInClient()) {
+        await liff.sendMessages([{ type: "text", text: messageText }]);
+        setSendStatus("ส่งข้อความเรียบร้อยแล้ว");
+        return;
+      }
+
+      if (liff.isApiAvailable("shareTargetPicker")) {
+        const result = await liff.shareTargetPicker([{ type: "text", text: messageText }]);
+        if (result) {
+          setSendStatus("ส่งข้อความเรียบร้อยแล้ว");
+        } else {
+          setSendStatus("ยกเลิกการส่งข้อความ");
+        }
+        return;
+      }
+
+      setSendError("ไม่สามารถส่งข้อความได้ในเบราว์เซอร์นี้");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "ส่งข้อความไม่สำเร็จ กรุณาลองใหม่";
+      setSendError(message);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -168,14 +250,18 @@ export function ProductDetailModal({ product, onClose }: Props) {
           </div> */}
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <a
-              href="https://line.me/R/ti/p/focusshoes"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-4 py-3 text-[var(--primary-foreground)] shadow-sm transition hover:bg-[#9f1c1d]"
+            <button
+              type="button"
+              onClick={handleSendOrder}
+              disabled={sending || liffInitializing}
+              className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-4 py-3 text-[var(--primary-foreground)] shadow-sm transition hover:bg-[#9f1c1d] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              แชทสั่งซื้อ
-            </a>
+              {sending
+                ? "กำลังส่ง..."
+                : liffInitializing
+                  ? "กำลังเชื่อมต่อ LINE..."
+                  : "สั่งซื้อผ่าน LINE"}
+            </button>
             <a
               href="tel:+66926644624"
               target="_blank"
@@ -185,6 +271,15 @@ export function ProductDetailModal({ product, onClose }: Props) {
               โทรสอบถาม
             </a>
           </div>
+          {(sendStatus || sendError || liffInitError) && (
+            <div className="rounded-lg border border-[var(--border)] bg-[var(--surface-veil)] px-3 py-2 text-xs">
+              {sendStatus && <div className="text-[var(--primary)]">{sendStatus}</div>}
+              {sendError && <div className="text-red-400">{sendError}</div>}
+              {!sendError && liffInitError && (
+                <div className="text-red-400">{liffInitError}</div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
