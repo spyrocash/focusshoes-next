@@ -92,6 +92,7 @@ export function ProductDetailModal({ product, onClose }: Props) {
       if (liff.isInClient()) {
         await liff.sendMessages([{ type: "text", text: messageText }]);
         toast.success("ส่งข้อความเรียบร้อยแล้ว");
+        liff.closeWindow();
         return;
       }
 
