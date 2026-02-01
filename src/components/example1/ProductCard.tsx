@@ -24,7 +24,7 @@ export function ProductCard({
   return (
     <div
       // className="cursor-pointer overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-[0_14px_32px_rgba(0,0,0,0.2)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
-      className="cursor-pointer overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
+      className="cursor-pointer overflow-hidden"
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -41,7 +41,7 @@ export function ProductCard({
           alt={name}
           fill
           sizes="(max-width:768px) 50vw, 300px"
-          className="object-cover"
+          className="object-cover transition-transform duration-500 hover:scale-[1.1]"
           priority
         />
         {!inStock && (
