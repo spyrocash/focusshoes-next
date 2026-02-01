@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import liff from "@line/liff";
 import type { Product } from "@/components/products/data";
 import { useStoreActions, useStoreState } from "@/store/hooks";
+import { toast } from "react-hot-toast";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -22,24 +23,28 @@ export function ProductDetailModal({ product, onClose }: Props) {
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   // const [quantity, setQuantity] = useState(1);
   const [index, setIndex] = useState(0);
-  const [sendStatus, setSendStatus] = useState<string | null>(null);
-  const [sendError, setSendError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
 
   const liffReady = useStoreState((state) => state.liff.ready);
   const liffInitializing = useStoreState((state) => state.liff.initializing);
   const liffInitError = useStoreState((state) => state.liff.error);
   const initLiff = useStoreActions((actions) => actions.liff.initLiff);
+  const lastInitErrorRef = useRef<string | null>(null);
 
   const liffId = process.env.NEXT_PUBLIC_LIFF_ID;
 
   useEffect(() => {
-    setSendStatus(null);
-    setSendError(null);
     setSending(false);
     setSelectedSize(null);
     setIndex(0);
   }, [product.id]);
+
+  useEffect(() => {
+    if (liffInitError && liffInitError !== lastInitErrorRef.current) {
+      toast.error(liffInitError);
+      lastInitErrorRef.current = liffInitError;
+    }
+  }, [liffInitError]);
 
   const changeImage = (delta: number) => {
     setIndex((prev) => {
@@ -50,23 +55,21 @@ export function ProductDetailModal({ product, onClose }: Props) {
 
   const handleSendOrder = async () => {
     if (!selectedSize) {
-      setSendError("กรุณาเลือกไซส์ก่อนสั่งซื้อ");
+      toast.error("กรุณาเลือกไซส์ก่อนสั่งซื้อ");
       return;
     }
     if (!liffId) {
-      setSendError("ยังไม่ได้ตั้งค่า LIFF ID");
+      toast.error("ยังไม่ได้ตั้งค่า LIFF ID");
       return;
     }
 
     setSending(true);
-    setSendStatus(null);
-    setSendError(null);
 
     try {
       if (!liffReady) {
         const ready = await initLiff();
         if (!ready) {
-          setSendError(liffInitError ?? "ไม่สามารถเริ่มต้น LIFF ได้");
+          toast.error(liffInitError ?? "ไม่สามารถเริ่มต้น LIFF ได้");
           return;
         }
       }
@@ -88,25 +91,25 @@ export function ProductDetailModal({ product, onClose }: Props) {
 
       if (liff.isInClient()) {
         await liff.sendMessages([{ type: "text", text: messageText }]);
-        setSendStatus("ส่งข้อความเรียบร้อยแล้ว");
+        toast.success("ส่งข้อความเรียบร้อยแล้ว");
         return;
       }
 
       if (liff.isApiAvailable("shareTargetPicker")) {
         const result = await liff.shareTargetPicker([{ type: "text", text: messageText }]);
         if (result) {
-          setSendStatus("ส่งข้อความเรียบร้อยแล้ว");
+          toast.success("ส่งข้อความเรียบร้อยแล้ว");
         } else {
-          setSendStatus("ยกเลิกการส่งข้อความ");
+          toast("ยกเลิกการส่งข้อความ");
         }
         return;
       }
 
-      setSendError("ไม่สามารถส่งข้อความได้ในเบราว์เซอร์นี้");
+      toast.error("ไม่สามารถส่งข้อความได้ในเบราว์เซอร์นี้");
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "ส่งข้อความไม่สำเร็จ กรุณาลองใหม่";
-      setSendError(message);
+      toast.error(message);
     } finally {
       setSending(false);
     }
@@ -271,15 +274,6 @@ export function ProductDetailModal({ product, onClose }: Props) {
               โทรสอบถาม
             </a>
           </div>
-          {(sendStatus || sendError || liffInitError) && (
-            <div className="rounded-lg border border-[var(--border)] bg-[var(--surface-veil)] px-3 py-2 text-xs">
-              {sendStatus && <div className="text-[var(--primary)]">{sendStatus}</div>}
-              {sendError && <div className="text-red-400">{sendError}</div>}
-              {!sendError && liffInitError && (
-                <div className="text-red-400">{liffInitError}</div>
-              )}
-            </div>
-          )}
         </div>
       </div>
     </div>
