@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import liff from "@line/liff";
-import type { Product } from "@/components/products/data";
-import { useStoreActions, useStoreState } from "@/store/hooks";
+import type { Product } from "@/mocks/products";
+import { useStoreActions, useStoreState } from "@/stores/hooks";
 import { toast } from "react-hot-toast";
 import {
   ChevronLeftIcon,

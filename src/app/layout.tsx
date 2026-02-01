@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Kanit } from "next/font/google";
-import "./globals.css";
+import "@/styles/globals.css";
 
 const THEME: "dark" | "light" = "dark"; // เปลี่ยนค่าเป็น "light" ได้จากโค้ดเพื่อสลับธีม
 

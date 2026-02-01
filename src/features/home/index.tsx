@@ -12,10 +12,10 @@ import {
   ScissorsIcon,
   ShieldIcon,
   XIcon,
-} from "./icons";
-import { ProductCard } from "./ProductCard";
-import { ProductDetailModal } from "./ProductDetailModal";
-import { products as catalogProducts, type Product } from "@/components/products/data";
+} from "@/components/icons";
+import { ProductCard } from "@/components/ProductCard";
+import { ProductDetailModal } from "@/components/ProductDetailModal";
+import { products as catalogProducts, type Product } from "@/mocks/products";
 
 const categories = [
   { id: "all", name: "ทั้งหมด" },
@@ -27,7 +27,7 @@ const categories = [
 
 const products: Product[] = catalogProducts;
 
-export function ExampleApp() {
+export function Home() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);

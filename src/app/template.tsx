@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 import { StoreProvider } from "easy-peasy";
 import { Toaster, toast } from "react-hot-toast";
 import { useOneSignal } from "@/hooks/use-onesignal";
-import { store } from "@/store";
-import { useStoreActions, useStoreState } from "@/store/hooks";
+import { store } from "@/stores";
+import { useStoreActions, useStoreState } from "@/stores/hooks";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   return (
