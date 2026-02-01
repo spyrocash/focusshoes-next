@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { DM_Sans, Kanit } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "@/styles/globals.css";
 
 const THEME: "dark" | "light" = "dark"; // เปลี่ยนค่าเป็น "light" ได้จากโค้ดเพื่อสลับธีม
@@ -68,6 +69,7 @@ export default function RootLayout({
         {children}
         {modal}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
