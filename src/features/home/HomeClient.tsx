@@ -12,7 +12,6 @@ import {
   XIcon,
 } from "@/components/icons";
 import { ProductCard } from "@/components/ProductCard";
-import { ProductDetailModal } from "@/components/ProductDetailModal";
 import type { Product } from "@/mocks/products";
 
 type HomeClientProps = {
@@ -24,7 +23,6 @@ type HomeClientProps = {
 export function HomeClient({ products, hero, footer }: HomeClientProps) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const categories = useMemo(
     () => [
@@ -77,18 +75,12 @@ export function HomeClient({ products, hero, footer }: HomeClientProps) {
               image={product.images[0]}
               inStock={product.inStock}
               priority={index < 4}
-              onClick={() => setSelectedProduct(product)}
+              href={`/products/${product.id}`}
             />
           ))}
         </div>
       </main>
       {footer}
-      {selectedProduct && (
-        <ProductDetailModal
-          product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-        />
-      )}
     </div>
   );
 }
