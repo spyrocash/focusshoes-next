@@ -94,3 +94,16 @@ export const ChevronRightIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <polyline points="9 18 15 12 9 6" />
   </svg>
 );
+
+export const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+    <path d="M13.5 8.75V7.4c0-.65.43-.8.73-.8h2.17V3.5h-2.99C10.77 3.5 9 5.27 9 7.78v2.22H7v3h2v7.5h3.5V13h2.64l.36-3h-3Z" />
+  </svg>
+);
+
+export const LineIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+    <path d="M12 3C6.92 3 3 6.3 3 10.5c0 3.38 2.49 6.24 6 7.25V21l3.16-2.27c.61.09 1.24.13 1.89.13 5.08 0 9.95-3.17 9.95-7.36C24 6.3 19.08 3 14 3h-2Z" />
+    <path d="M8.7 12.95h-1.7v-3.9h1.7v3.9Zm4.1 0h-1.7V9.05h1.7v3.9Zm4.1 0h-1.7v-1.5h1.7v1.5Zm-2.9 0h-1.7v-3.9h1.7v3.9Z" />
+  </svg>
+);

@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import {
   AwardIcon,
   ClockIcon,
+  FacebookIcon,
+  LineIcon,
   MapPinIcon,
   MenuIcon,
   PhoneIcon,
@@ -126,7 +128,7 @@ function Header({
               </a>
             </div>
             <div className="flex items-center gap-2">
-              <MapPinIcon className="h-4 w-4 text-[var(--primary)]" />
+              <MapPinIcon className="h-5 w-5 text-[var(--primary)]" />
               <span>
                 166/95 ถ.จรัญสนิทวงศ์ แขวงบ้านช่างหล่อ เขตบางกอกน้อย กรุงเทพมหานคร 10700
               </span>
@@ -136,7 +138,7 @@ function Header({
               <span>จันทร์-เสาร์ 9:00-18:00</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
+              <FacebookIcon className="h-4 w-4 text-[var(--primary)]" />
               <a
                 href="https://www.facebook.com/focusshoes.th"
                 className="underline-offset-2 hover:underline"
@@ -147,7 +149,7 @@ function Header({
               </a>
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
+              <LineIcon className="h-4 w-4 text-[var(--primary)]" />
               <a
                 href="https://line.me/R/ti/p/focusshoes"
                 className="underline-offset-2 hover:underline"
