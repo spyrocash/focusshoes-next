@@ -11,3 +11,17 @@ export const LOCALE_META: Record<
   en: { label: "English", flag: "🇬🇧", locales: ["en", "en-US", "en-GB"], numberLocale: "en-US" },
   lo: { label: "ລາວ", flag: "🇱🇦", locales: ["lo", "lo-LA"], numberLocale: "lo-LA" },
 };
+
+export function formatNumber(value: number, locale: Locale) {
+  const separator = locale === "lo" ? "." : ",";
+  const absValue = Math.abs(value);
+  const [intPart, fractionPart] = absValue.toString().split(".");
+  const withSeparators = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+  const sign = value < 0 ? "-" : "";
+
+  if (fractionPart) {
+    return `${sign}${withSeparators}.${fractionPart}`;
+  }
+
+  return `${sign}${withSeparators}`;
+}

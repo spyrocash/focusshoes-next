@@ -8,7 +8,7 @@ import type { Product } from "@/mocks/products";
 import { useStoreActions, useStoreState } from "@/stores/hooks";
 import { toast } from "react-hot-toast";
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "./icons";
-import { LOCALE_META } from "@/i18n/locales";
+import { formatNumber } from "@/i18n/locales";
 import { useTranslations } from "@/i18n/useTranslations";
 import { useUi } from "@/components/layout/UiProvider";
 
@@ -86,9 +86,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
         return;
       }
 
-      const priceDisplay = new Intl.NumberFormat(LOCALE_META[locale].numberLocale).format(
-        Number(product.price),
-      );
+      const priceDisplay = formatNumber(Number(product.price), locale);
       const messageText = [
         t("productOrderTitle"),
         `${t("productOrderItem")}: ${product.name}`,
@@ -211,7 +209,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
         <div className="flex items-end gap-2">
           <span className="text-3xl font-bold text-[var(--primary)]">
-            ฿{new Intl.NumberFormat(LOCALE_META[locale].numberLocale).format(Number(product.price))}
+            ฿{formatNumber(Number(product.price), locale)}
           </span>
           {/* <span className="mb-1 text-lg text-[var(--muted)] line-through">
             ฿{Number(product.price) * 1.3}

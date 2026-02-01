@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { LOCALE_META } from "@/i18n/locales";
+import { formatNumber } from "@/i18n/locales";
 import { useTranslations } from "@/i18n/useTranslations";
 import { useUi } from "@/components/layout/UiProvider";
 
@@ -30,9 +30,7 @@ export function ProductCard({
 }: ProductCardProps) {
   const { locale } = useUi();
   const t = useTranslations();
-  const priceDisplay = new Intl.NumberFormat(LOCALE_META[locale].numberLocale).format(
-    Number(price),
-  );
+  const priceDisplay = formatNumber(Number(price), locale);
   if (href) {
     return (
       <Link
