@@ -46,8 +46,8 @@ export function ExampleApp() {
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
-      <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
-        <div className="mb-4 flex items-center justify-between">
+      <main className="mx-auto max-w-5xl py-2">
+        <div className="mb-2 flex items-center justify-between px-4 sm:px-6">
           <div>
             <h3 className="text-lg font-semibold text-[var(--foreground)]">
               สินค้าทั้งหมด ({filteredProducts.length})
@@ -58,7 +58,7 @@ export function ExampleApp() {
             Focus Shoes · leather 100%
           </span>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 md:grid-cols-4 px-1">
           {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
@@ -222,7 +222,7 @@ function CategoryFilter({
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+              className={`whitespace-nowrap rounded-full px-4 py-1 text-sm font-medium transition-colors ${
                 selectedCategory === cat.id
                   ? "bg-[var(--primary)] text-white"
                   : "border border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:bg-[var(--surface-veil)]"

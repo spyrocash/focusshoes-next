@@ -23,7 +23,8 @@ export function ProductCard({
   const priceDisplay = Number(price).toLocaleString("th-TH");
   return (
     <div
-      className="cursor-pointer overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-[0_14px_32px_rgba(0,0,0,0.2)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
+      // className="cursor-pointer overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-[0_14px_32px_rgba(0,0,0,0.2)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
+      className="cursor-pointer overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -34,7 +35,7 @@ export function ProductCard({
         }
       }}
     >
-      <div className="relative aspect-square">
+      <div className="relative aspect-7/8 rounded-lg overflow-hidden">
         <Image
           src={image}
           alt={name}
@@ -51,12 +52,12 @@ export function ProductCard({
           </div>
         )}
       </div>
-      <div className="p-3 text-[var(--foreground)]">
-        <h3 className="mb-2 line-clamp-2 text-sm font-medium text-[var(--foreground)]">
+      <div className="p-1 text-[var(--foreground)]">
+        <h3 className="line-clamp-2 text-sm font-medium text-[var(--foreground)]">
           {name}
         </h3>
         <div className="flex items-center justify-between">
-          <span className="text-lg font-semibold text-[var(--primary)]">
+          <span className="text-medium font-semibold text-[var(--primary)]">
             ฿{priceDisplay}
           </span>
         </div>
