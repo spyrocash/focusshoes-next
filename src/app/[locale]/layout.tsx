@@ -14,18 +14,18 @@ export function generateStaticParams() {
 type LayoutProps = {
   children: ReactNode;
   modal: ReactNode;
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 };
 
 export default async function LocaleLayout({ children, modal, params }: LayoutProps) {
   const { locale } = await params;
 
-  if (!SUPPORTED_LOCALES.includes(locale)) {
+  if (!SUPPORTED_LOCALES.includes(locale as Locale)) {
     notFound();
   }
 
   return (
-    <UiProvider initialLocale={locale}>
+    <UiProvider initialLocale={locale as Locale}>
       <Header />
       {children}
       <Footer />
