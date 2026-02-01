@@ -2,6 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { LOCALE_META } from "@/i18n/locales";
+import { useTranslations } from "@/i18n/useTranslations";
+import { useUi } from "@/components/layout/UiProvider";
 
 export type ProductCardProps = {
   id: string;
@@ -25,7 +28,11 @@ export function ProductCard({
   href,
   onClick,
 }: ProductCardProps) {
-  const priceDisplay = Number(price).toLocaleString("th-TH");
+  const { locale } = useUi();
+  const t = useTranslations();
+  const priceDisplay = new Intl.NumberFormat(LOCALE_META[locale].numberLocale).format(
+    Number(price),
+  );
   if (href) {
     return (
       <Link
@@ -47,7 +54,7 @@ export function ProductCard({
           {!inStock && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
               <span className="rounded bg-red-600 px-3 py-1 font-medium text-white">
-                สินค้าหมด
+                {t("productOutOfStock")}
               </span>
             </div>
           )}
@@ -91,7 +98,7 @@ export function ProductCard({
         {!inStock && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
             <span className="rounded bg-red-600 px-3 py-1 font-medium text-white">
-              สินค้าหมด
+              {t("productOutOfStock")}
             </span>
           </div>
         )}

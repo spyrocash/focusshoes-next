@@ -64,7 +64,7 @@ export function Header() {
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="rounded-lg p-2 transition-colors hover:bg-[var(--primary)]/10"
-              aria-label="toggle menu"
+              aria-label={t("headerMenuToggleLabel")}
             >
               {menuOpen ? <XIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
             </button>
@@ -126,7 +126,7 @@ export function Header() {
           <div className="fixed inset-0 z-[70] flex items-center justify-center">
             <button
               type="button"
-              aria-label="Close language modal"
+              aria-label={t("headerLanguageCloseLabel")}
               className="absolute inset-0 bg-black/60"
               onClick={() => setLanguageOpen(false)}
             />
@@ -141,7 +141,7 @@ export function Header() {
                 type="button"
                 className="rounded-full p-1 text-[var(--muted)] transition-colors hover:text-[var(--foreground)]"
                 onClick={() => setLanguageOpen(false)}
-                aria-label="close"
+                aria-label={t("productCloseLabel")}
               >
                 <XIcon className="h-4 w-4" />
               </button>
@@ -171,11 +171,13 @@ export function Header() {
                       </div>
                     </div>
                     {isActive && (
-                      <span className="text-xs font-semibold text-[var(--primary)]">active</span>
+                      <span className="text-xs font-semibold text-[var(--primary)]">
+                        {t("headerLanguageActive")}
+                      </span>
                     )}
                   </button>
                 );
-                })}
+              })}
             </div>
           </div>
         </div>,

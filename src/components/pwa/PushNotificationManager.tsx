@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { sendNotification, subscribeUser, unsubscribeUser } from "@/app/actions";
+import { useTranslations } from "@/i18n/useTranslations";
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -17,6 +18,7 @@ function urlBase64ToUint8Array(base64String: string) {
 }
 
 export function PushNotificationManager() {
+  const t = useTranslations();
   const [isSupported, setIsSupported] = useState(false);
   const [subscription, setSubscription] = useState<PushSubscription | null>(null);
   const [message, setMessage] = useState("");
@@ -37,9 +39,9 @@ export function PushNotificationManager() {
       })
       .catch((error) => {
         console.error("Service worker registration failed", error);
-        setStatus("ลงทะเบียน Service Worker ไม่สำเร็จ");
+        setStatus(t("pwaStatusServiceWorkerFail"));
       });
-  }, []);
+  }, [t]);
 
   const handleSubscribe = async () => {
     if (!isSupported) return;
@@ -48,13 +50,13 @@ export function PushNotificationManager() {
 
     try {
       if (Notification.permission === "denied") {
-        setStatus("โปรดอนุญาตการแจ้งเตือนในเบราว์เซอร์ก่อน");
+        setStatus(t("pwaStatusAllowNotification"));
         return;
       }
 
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
-        setStatus("ยังไม่ได้อนุญาตการแจ้งเตือน");
+        setStatus(t("pwaStatusPermissionDenied"));
         return;
       }
 
@@ -62,7 +64,7 @@ export function PushNotificationManager() {
       const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
       if (!vapidKey) {
-        setStatus("ไม่พบ VAPID public key");
+        setStatus(t("pwaStatusMissingVapid"));
         return;
       }
 
@@ -73,10 +75,10 @@ export function PushNotificationManager() {
 
       await subscribeUser(JSON.parse(JSON.stringify(newSubscription)));
       setSubscription(newSubscription);
-      setStatus("สมัครรับการแจ้งเตือนแล้ว");
+      setStatus(t("pwaStatusSubscribed"));
     } catch (error) {
       console.error("Push subscription failed", error);
-      setStatus("สมัครรับการแจ้งเตือนไม่สำเร็จ");
+      setStatus(t("pwaStatusSubscribeFailed"));
     } finally {
       setIsWorking(false);
     }
@@ -91,10 +93,10 @@ export function PushNotificationManager() {
       await unsubscribeUser(JSON.parse(JSON.stringify(subscription)));
       await subscription.unsubscribe();
       setSubscription(null);
-      setStatus("ยกเลิกการแจ้งเตือนแล้ว");
+      setStatus(t("pwaStatusUnsubscribed"));
     } catch (error) {
       console.error("Unsubscribe failed", error);
-      setStatus("ยกเลิกการแจ้งเตือนไม่สำเร็จ");
+      setStatus(t("pwaStatusUnsubscribeFailed"));
     } finally {
       setIsWorking(false);
     }
@@ -106,11 +108,11 @@ export function PushNotificationManager() {
 
     try {
       await sendNotification(message);
-      setStatus("ส่งแจ้งเตือนเรียบร้อย");
+      setStatus(t("pwaStatusSendSuccess"));
       setMessage("");
     } catch (error) {
       console.error("Send notification failed", error);
-      setStatus("ส่งแจ้งเตือนไม่สำเร็จ");
+      setStatus(t("pwaStatusSendFailed"));
     } finally {
       setIsWorking(false);
     }
@@ -122,9 +124,9 @@ export function PushNotificationManager() {
 
   return (
     <div className="fixed bottom-4 right-4 z-50 w-72 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 text-sm text-[var(--foreground)] shadow-[0_18px_40px_rgba(0,0,0,0.35)]">
-      <h3 className="text-base font-semibold">แจ้งเตือนผ่าน PWA</h3>
+      <h3 className="text-base font-semibold">{t("pwaTitle")}</h3>
       <p className="mt-1 text-xs text-[var(--muted)]">
-        สมัครเพื่อรับข่าวสารและสถานะคำสั่งซื้อ
+        {t("pwaDescription")}
       </p>
 
       <div className="mt-3 space-y-2">
@@ -135,7 +137,7 @@ export function PushNotificationManager() {
             disabled={isWorking}
             className="w-full rounded-full border border-white/10 px-3 py-2 text-xs font-semibold transition hover:bg-white/5 disabled:opacity-60"
           >
-            ยกเลิกการแจ้งเตือน
+            {t("pwaUnsubscribe")}
           </button>
         ) : (
           <button
@@ -144,16 +146,16 @@ export function PushNotificationManager() {
             disabled={isWorking}
             className="w-full rounded-full bg-[var(--primary)] px-3 py-2 text-xs font-semibold text-black transition hover:bg-[var(--primary)]/80 disabled:opacity-60"
           >
-            สมัครรับการแจ้งเตือน
+            {t("pwaSubscribe")}
           </button>
         )}
 
         <div className="space-y-2 rounded-xl border border-white/5 bg-[var(--surface-veil)] p-3">
-          <p className="text-xs text-[var(--muted)]">ข้อความทดสอบ</p>
+          <p className="text-xs text-[var(--muted)]">{t("pwaTestTitle")}</p>
           <input
             value={message}
             onChange={(event) => setMessage(event.target.value)}
-            placeholder="ข้อความแจ้งเตือน"
+            placeholder={t("pwaPlaceholder")}
             className="w-full rounded-lg border border-white/10 bg-transparent px-3 py-2 text-xs outline-none focus:border-[var(--primary)]"
           />
           <button
@@ -162,7 +164,7 @@ export function PushNotificationManager() {
             disabled={isWorking || !subscription}
             className="w-full rounded-full border border-white/10 px-3 py-2 text-xs font-semibold transition hover:bg-white/5 disabled:opacity-60"
           >
-            ส่งแจ้งเตือนทดสอบ
+            {t("pwaSendTest")}
           </button>
         </div>
       </div>

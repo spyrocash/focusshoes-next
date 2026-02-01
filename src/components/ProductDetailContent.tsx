@@ -8,6 +8,9 @@ import type { Product } from "@/mocks/products";
 import { useStoreActions, useStoreState } from "@/stores/hooks";
 import { toast } from "react-hot-toast";
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "./icons";
+import { LOCALE_META } from "@/i18n/locales";
+import { useTranslations } from "@/i18n/useTranslations";
+import { useUi } from "@/components/layout/UiProvider";
 
 type Props = {
   product: Product;
@@ -19,6 +22,8 @@ export function ProductDetailContent({ product, onClose }: Props) {
   // const [quantity, setQuantity] = useState(1);
   const [index, setIndex] = useState(0);
   const [sending, setSending] = useState(false);
+  const { locale } = useUi();
+  const t = useTranslations();
 
   const liffReady = useStoreState((state) => state.liff.ready);
   const liffInitializing = useStoreState((state) => state.liff.initializing);
@@ -28,6 +33,13 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
   const liffId = process.env.NEXT_PUBLIC_LIFF_ID;
 
+  const translateLiffError = (error: string) => {
+    if (error === "โหมดพัฒนา: ปิดการเชื่อมต่อ LIFF") return t("productLiffDevDisabled");
+    if (error === "ยังไม่ได้ตั้งค่า LIFF ID") return t("productLiffMissing");
+    if (error === "ไม่สามารถเริ่มต้น LIFF ได้") return t("productLiffInitFail");
+    return error;
+  };
+
   useEffect(() => {
     setSending(false);
     setSelectedSize(null);
@@ -36,10 +48,10 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
   useEffect(() => {
     if (liffInitError && liffInitError !== lastInitErrorRef.current) {
-      toast.error(liffInitError);
+      toast.error(translateLiffError(liffInitError));
       lastInitErrorRef.current = liffInitError;
     }
-  }, [liffInitError]);
+  }, [liffInitError, t]);
 
   const changeImage = (delta: number) => {
     setIndex((prev) => {
@@ -50,11 +62,11 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
   const handleSendOrder = async () => {
     if (!selectedSize) {
-      toast.error("กรุณาเลือกไซส์ก่อนสั่งซื้อ");
+      toast.error(t("productSelectSizeError"));
       return;
     }
     if (!liffId) {
-      toast.error("ยังไม่ได้ตั้งค่า LIFF ID");
+      toast.error(t("productLiffMissing"));
       return;
     }
 
@@ -64,7 +76,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
       if (!liffReady) {
         const ready = await initLiff();
         if (!ready) {
-          toast.error(liffInitError ?? "ไม่สามารถเริ่มต้น LIFF ได้");
+          toast.error(liffInitError ? translateLiffError(liffInitError) : t("productLiffInitFail"));
           return;
         }
       }
@@ -74,19 +86,21 @@ export function ProductDetailContent({ product, onClose }: Props) {
         return;
       }
 
-      const priceDisplay = Number(product.price).toLocaleString("th-TH");
+      const priceDisplay = new Intl.NumberFormat(LOCALE_META[locale].numberLocale).format(
+        Number(product.price),
+      );
       const messageText = [
-        "สั่งซื้อสินค้า",
-        `สินค้า: ${product.name}`,
-        `หมวดหมู่: ${product.category}`,
-        `ราคา: ฿${priceDisplay}`,
-        `ไซส์: EU ${selectedSize}`,
-        `รหัสสินค้า: ${product.id}`,
+        t("productOrderTitle"),
+        `${t("productOrderItem")}: ${product.name}`,
+        `${t("productOrderCategory")}: ${product.category}`,
+        `${t("productOrderPrice")}: ฿${priceDisplay}`,
+        `${t("productOrderSize")}: EU ${selectedSize}`,
+        `${t("productOrderSku")}: ${product.id}`,
       ].join("\n");
 
       if (liff.isInClient()) {
         await liff.sendMessages([{ type: "text", text: messageText }]);
-        toast.success("ส่งข้อความเรียบร้อยแล้ว");
+        toast.success(t("productMessageSent"));
         liff.closeWindow();
         return;
       }
@@ -94,17 +108,17 @@ export function ProductDetailContent({ product, onClose }: Props) {
       if (liff.isApiAvailable("shareTargetPicker")) {
         const result = await liff.shareTargetPicker([{ type: "text", text: messageText }]);
         if (result) {
-          toast.success("ส่งข้อความเรียบร้อยแล้ว");
+          toast.success(t("productMessageSent"));
         } else {
-          toast("ยกเลิกการส่งข้อความ");
+          toast(t("productMessageCanceled"));
         }
         return;
       }
 
-      toast.error("ไม่สามารถส่งข้อความได้ในเบราว์เซอร์นี้");
+      toast.error(t("productMessageUnsupported"));
     } catch (error: unknown) {
       const message =
-        error instanceof Error ? error.message : "ส่งข้อความไม่สำเร็จ กรุณาลองใหม่";
+        error instanceof Error ? error.message : t("productMessageFailed");
       toast.error(message);
     } finally {
       setSending(false);
@@ -120,7 +134,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
           <button
             onClick={onClose}
             className="bg-white/10 p-2 transition hover:bg-white/20"
-            aria-label="ปิด"
+            aria-label={t("productCloseLabel")}
           >
             <XIcon className="h-5 w-5" />
           </button>
@@ -140,7 +154,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
         <div className="relative aspect-square">
           <Image
             src={product.images[index]}
-            alt={`${product.name} - รูปที่ ${index + 1}`}
+            alt={`${product.name} - ${t("productImageLabel")} ${index + 1}`}
             fill
             sizes="(max-width:768px) 100vw, 600px"
             className="object-cover"
@@ -152,14 +166,14 @@ export function ProductDetailContent({ product, onClose }: Props) {
             <button
               onClick={() => changeImage(-1)}
               className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/55 p-2 text-white shadow-lg backdrop-blur-sm transition-colors hover:bg-black/80"
-              aria-label="ก่อนหน้า"
+              aria-label={t("productPreviousLabel")}
             >
               <ChevronLeftIcon className="h-5 w-5" />
             </button>
             <button
               onClick={() => changeImage(1)}
               className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/55 p-2 text-white shadow-lg backdrop-blur-sm transition-colors hover:bg-black/80"
-              aria-label="ถัดไป"
+              aria-label={t("productNextLabel")}
             >
               <ChevronRightIcon className="h-5 w-5" />
             </button>
@@ -179,7 +193,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
             >
               <Image
                 src={src}
-                alt={`${product.name} thumb ${i + 1}`}
+                alt={`${product.name} ${t("productImageLabel")} ${i + 1}`}
                 fill
                 className="object-cover"
                 sizes="64px"
@@ -197,7 +211,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
         <div className="flex items-end gap-2">
           <span className="text-3xl font-bold text-[var(--primary)]">
-            ฿{Number(product.price).toLocaleString("th-TH")}
+            ฿{new Intl.NumberFormat(LOCALE_META[locale].numberLocale).format(Number(product.price))}
           </span>
           {/* <span className="mb-1 text-lg text-[var(--muted)] line-through">
             ฿{Number(product.price) * 1.3}
@@ -205,17 +219,19 @@ export function ProductDetailContent({ product, onClose }: Props) {
         </div>
 
         <div className="flex items-center gap-2 text-sm">
-          <span className="font-medium text-[var(--foreground)]">วัสดุ:</span>
+          <span className="font-medium text-[var(--foreground)]">{t("productMaterialLabel")}</span>
           <span className="text-[var(--muted)]">{product.material}</span>
         </div>
 
         <div>
-          <h3 className="mb-2 font-medium text-[var(--foreground)]">รายละเอียดสินค้า</h3>
+          <h3 className="mb-2 font-medium text-[var(--foreground)]">
+            {t("productDetailsTitle")}
+          </h3>
           <p className="text-sm leading-relaxed text-[var(--muted)]">{product.description}</p>
         </div>
 
         <div className="space-y-3">
-          <h3 className="font-medium text-[var(--foreground)]">เลือกไซส์</h3>
+          <h3 className="font-medium text-[var(--foreground)]">{t("productSelectSizeTitle")}</h3>
           <div className="flex flex-wrap gap-2">
             {product.sizes.map((size) => (
               <button
@@ -262,10 +278,10 @@ export function ProductDetailContent({ product, onClose }: Props) {
             className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-4 py-3 text-[var(--primary-foreground)] shadow-sm transition hover:bg-[#9f1c1d] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {sending
-              ? "กำลังส่ง..."
+              ? t("productSending")
               : liffInitializing
-                ? "กำลังเชื่อมต่อ LINE..."
-                : "สั่งซื้อผ่าน LINE"}
+                ? t("productConnectingLine")
+                : t("productSendButton")}
           </button>
           <a
             href="tel:+66926644624"
@@ -273,7 +289,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
             rel="noopener noreferrer"
             className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border)] px-4 py-3 text-[var(--foreground)] transition hover:border-white/30"
           >
-            โทรสอบถาม
+            {t("productCallButton")}
           </a>
         </div>
       </div>

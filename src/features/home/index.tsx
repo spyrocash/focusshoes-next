@@ -1,7 +1,10 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { AwardIcon, ScissorsIcon, ShieldIcon } from "@/components/icons";
 import { HomeClient } from "@/features/home/HomeClient";
 import { products as catalogProducts } from "@/mocks/products";
+import { useTranslations } from "@/i18n/useTranslations";
 
 export function Home() {
   return (
@@ -10,6 +13,8 @@ export function Home() {
 }
 
 function Hero() {
+  const t = useTranslations();
+
   return (
     <div className="bg-gradient-to-br from-[var(--surface)] via-[var(--surface)] to-[var(--background)] px-4 py-6">
       <div className="mx-auto max-w-5xl">
@@ -17,19 +22,25 @@ function Hero() {
           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--primary)]/60 bg-[var(--primary)]/15 text-lg font-bold text-[var(--primary)]">
             FS
           </div>
-          <h2 className="text-3xl font-semibold text-[var(--foreground)]">
-            ร้านรองเท้า Focus Shoes
-          </h2>
+          <h2 className="text-3xl font-semibold text-[var(--foreground)]">{t("heroTitle")}</h2>
         </div>
         <p className="mb-4 mt-2 max-w-3xl leading-relaxed text-[var(--muted)]">
-          จำหน่ายรองเท้าสตรี, ข้าราชการ, พยาบาล ราคาโรงงาน ทั้งปลีกและส่ง หนังแท้100%
-          สวมใส่สบาย ไม่มีปัญหาเรื่องปวดเท้า มีให้เลือกหลายสไตล์ สวย คุณภาพดี ที่สำคัญราคาไม่แพง
+          {t("heroDescription")}
         </p>
 
         <div className="grid grid-cols-3 gap-3">
-          <Feature icon={<ShieldIcon className="h-6 w-6 text-[var(--primary)]" />} label="หนังแท้ 100%" />
-          <Feature icon={<AwardIcon className="h-6 w-6 text-[var(--primary)]" />} label="ประสบการณ์ 20ปี" />
-          <Feature icon={<ScissorsIcon className="h-6 w-6 text-[var(--primary)]" />} label="สั่งตัดได้" />
+          <Feature
+            icon={<ShieldIcon className="h-6 w-6 text-[var(--primary)]" />}
+            label={t("featureLeather")}
+          />
+          <Feature
+            icon={<AwardIcon className="h-6 w-6 text-[var(--primary)]" />}
+            label={t("featureExperience")}
+          />
+          <Feature
+            icon={<ScissorsIcon className="h-6 w-6 text-[var(--primary)]" />}
+            label={t("featureCustom")}
+          />
         </div>
       </div>
     </div>

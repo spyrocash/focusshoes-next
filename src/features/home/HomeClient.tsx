@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import type { Product } from "@/mocks/products";
 import { useUi } from "@/components/layout/UiProvider";
+import { useTranslations } from "@/i18n/useTranslations";
 
 type HomeClientProps = {
   products: Product[];
@@ -14,16 +15,17 @@ type HomeClientProps = {
 export function HomeClient({ products, hero }: HomeClientProps) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const { menuOpen } = useUi();
+  const t = useTranslations();
 
   const categories = useMemo(
     () => [
-      { id: "all", name: "ทั้งหมด" },
+      { id: "all", name: t("homeAllCategory") },
       ...Array.from(new Set(products.map((p) => p.category))).map((c) => ({
         id: c,
         name: c,
       })),
     ],
-    [products],
+    [products, t],
   );
 
   const filteredProducts = useMemo(() => {
@@ -46,11 +48,11 @@ export function HomeClient({ products, hero }: HomeClientProps) {
         <div className="mb-2 flex items-center justify-between px-4 sm:px-6">
           <div>
             <h3 className="text-lg font-semibold text-[var(--foreground)]">
-              สินค้าทั้งหมด ({filteredProducts.length})
+              {t("homeAllProductsTitle")} ({filteredProducts.length})
             </h3>
           </div>
           <span className="hidden rounded-full border border-white/10 px-3 py-1 text-xs text-[var(--muted)] sm:inline-flex">
-            Focus Shoes · leather 100%
+            {t("homeBadge")}
           </span>
         </div>
         <div className="grid grid-cols-2 gap-1 px-1 sm:grid-cols-3 md:grid-cols-4">
