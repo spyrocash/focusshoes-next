@@ -7,8 +7,16 @@ export const useOneSignal = () => {
   useEffect(() => {
     // Ensure this code runs only on the client side
     if (typeof window !== "undefined") {
+      const appId = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID;
+      if (!appId) {
+        if (process.env.NODE_ENV === "development") {
+          console.warn("Missing NEXT_PUBLIC_ONESIGNAL_APP_ID");
+        }
+        return;
+      }
+
       OneSignal.init({
-        appId: "d7996da4-2d9e-4723-99d3-e47132a32ce2",
+        appId,
         // You can add other initialization options here
         notifyButton: {
           enable: true,

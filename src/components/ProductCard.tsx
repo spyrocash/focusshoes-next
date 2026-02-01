@@ -10,6 +10,7 @@ export type ProductCardProps = {
   rating: number;
   image: string;
   inStock: boolean;
+  priority?: boolean;
   onClick?: () => void;
 };
 
@@ -18,6 +19,7 @@ export function ProductCard({
   price,
   image,
   inStock,
+  priority = false,
   onClick,
 }: ProductCardProps) {
   const priceDisplay = Number(price).toLocaleString("th-TH");
@@ -42,7 +44,7 @@ export function ProductCard({
           fill
           sizes="(max-width:768px) 50vw, 300px"
           className="object-cover transition-transform duration-500 hover:scale-[1.1]"
-          priority
+          priority={priority}
         />
         {!inStock && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
