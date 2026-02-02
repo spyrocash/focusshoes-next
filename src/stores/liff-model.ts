@@ -22,7 +22,13 @@ export interface LiffModel {
   setError: Action<LiffModel, string | null>;
   setProfile: Action<LiffModel, LiffProfile | null>;
   setProfileError: Action<LiffModel, string | null>;
-  initLiff: Thunk<LiffModel, void, unknown, StoreModel, Promise<boolean>>;
+  initLiff: Thunk<
+    LiffModel,
+    { withLoginOnExternalBrowser?: boolean } | void,
+    unknown,
+    StoreModel,
+    Promise<boolean>
+  >;
   fetchProfile: Thunk<LiffModel, void, unknown, StoreModel, Promise<boolean>>;
 }
 
@@ -47,7 +53,7 @@ export const liffModel: LiffModel = {
   setProfileError: action((state, payload) => {
     state.profileError = payload;
   }),
-  initLiff: thunk(async (actions, _payload, { getState }) => {
+  initLiff: thunk(async (actions, payload, { getState }) => {
     if (process.env.NODE_ENV === "development") {
       actions.setError("โหมดพัฒนา: ปิดการเชื่อมต่อ LIFF");
       return false;
@@ -66,7 +72,8 @@ export const liffModel: LiffModel = {
     actions.setError(null);
 
     try {
-      await liff.init({ liffId, withLoginOnExternalBrowser: false });
+      const withLoginOnExternalBrowser = payload?.withLoginOnExternalBrowser ?? false;
+      await liff.init({ liffId, withLoginOnExternalBrowser });
       actions.setReady(true);
       if (liff.isLoggedIn()) {
         await actions.fetchProfile();

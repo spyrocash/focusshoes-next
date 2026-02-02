@@ -74,7 +74,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
     try {
       if (!liffReady) {
-        const ready = await initLiff();
+        const ready = await initLiff({ withLoginOnExternalBrowser: true });
         if (!ready) {
           toast.error(liffInitError ? translateLiffError(liffInitError) : t("productLiffInitFail"));
           return;
