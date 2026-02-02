@@ -66,7 +66,7 @@ export const liffModel: LiffModel = {
     actions.setError(null);
 
     try {
-      await liff.init({ liffId, withLoginOnExternalBrowser: true });
+      await liff.init({ liffId, withLoginOnExternalBrowser: false });
       actions.setReady(true);
       if (liff.isLoggedIn()) {
         await actions.fetchProfile();
