@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import liff from "@line/liff";
 import type { Product } from "@/mocks/products";
-import { useStoreActions, useStoreState } from "@/stores/hooks";
+import { useStoreActions } from "@/stores/hooks";
 import { toast } from "react-hot-toast";
 import { XIcon } from "./icons";
 import { formatNumber } from "@/i18n/locales";
@@ -22,16 +22,80 @@ export function ProductDetailContent({ product, onClose }: Props) {
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   // const [quantity, setQuantity] = useState(1);
   const [sending, setSending] = useState(false);
+  const [liffInitializing, setLiffInitializing] = useState(false);
+  const [liffInitError, setLiffInitError] = useState<string | null>(null);
   const { locale } = useUi();
   const t = useTranslations();
 
-  const liffReady = useStoreState((state) => state.liff.ready);
-  const liffInitializing = useStoreState((state) => state.liff.initializing);
-  const liffInitError = useStoreState((state) => state.liff.error);
-  const initLiff = useStoreActions((actions) => actions.liff.initLiff);
+  const setProfile = useStoreActions((actions) => actions.liff.setProfile);
+  const setProfileError = useStoreActions((actions) => actions.liff.setProfileError);
+  const liffReadyRef = useRef(false);
   const lastInitErrorRef = useRef<string | null>(null);
 
-  const liffId = process.env.NEXT_PUBLIC_LIFF_ID;
+  const liffId = process.env.NEXT_PUBLIC_PRODUCT_DETAIL_LIFF_ID;
+
+  const loadProfile = useCallback(async () => {
+    setProfileError(null);
+    if (!liff.isLoggedIn()) {
+      setProfile(null);
+      return false;
+    }
+
+    try {
+      const profile = await liff.getProfile();
+      setProfile({
+        userId: profile.userId,
+        displayName: profile.displayName,
+        pictureUrl: profile.pictureUrl,
+        statusMessage: profile.statusMessage,
+      });
+      return true;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "ไม่สามารถดึงโปรไฟล์ได้";
+      setProfileError(message);
+      return false;
+    }
+  }, [setProfile, setProfileError]);
+
+  const initLiff = useCallback(
+    async (options?: { withLoginOnExternalBrowser?: boolean }) => {
+      if (process.env.NODE_ENV === "development") {
+        setLiffInitError("โหมดพัฒนา: ปิดการเชื่อมต่อ LIFF");
+        return false;
+      }
+
+      if (!liffId) {
+        setLiffInitError("ยังไม่ได้ตั้งค่า LIFF ID");
+        return false;
+      }
+
+      if (liffReadyRef.current) return true;
+      if (liffInitializing) return false;
+
+      setLiffInitializing(true);
+      setLiffInitError(null);
+
+      try {
+        await liff.init({
+          liffId,
+          withLoginOnExternalBrowser: options?.withLoginOnExternalBrowser ?? false,
+        });
+        liffReadyRef.current = true;
+        if (liff.isLoggedIn()) {
+          await loadProfile();
+        }
+        return true;
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : "ไม่สามารถเริ่มต้น LIFF ได้";
+        setLiffInitError(message);
+        return false;
+      } finally {
+        setLiffInitializing(false);
+      }
+    },
+    [liffId, liffInitializing, loadProfile],
+  );
 
   const translateLiffError = (error: string) => {
     if (error === "โหมดพัฒนา: ปิดการเชื่อมต่อ LIFF") return t("productLiffDevDisabled");
@@ -44,6 +108,10 @@ export function ProductDetailContent({ product, onClose }: Props) {
     setSending(false);
     setSelectedSize(null);
   }, [product.id]);
+
+  useEffect(() => {
+    initLiff();
+  }, [initLiff]);
 
   useEffect(() => {
     if (liffInitError && liffInitError !== lastInitErrorRef.current) {
@@ -65,7 +133,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
     setSending(true);
 
     try {
-      if (!liffReady) {
+      if (!liffReadyRef.current) {
         const ready = await initLiff({ withLoginOnExternalBrowser: true });
         if (!ready) {
           toast.error(liffInitError ? translateLiffError(liffInitError) : t("productLiffInitFail"));

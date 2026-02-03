@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
+import { AppProviders } from "@/components/AppProviders";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { UiProvider } from "@/components/layout/UiProvider";
 import { SUPPORTED_LOCALES, type Locale } from "@/i18n/locales";
 
 export const dynamicParams = false;
@@ -25,11 +25,11 @@ export default async function LocaleLayout({ children, modal, params }: LayoutPr
   }
 
   return (
-    <UiProvider initialLocale={locale as Locale}>
+    <AppProviders initialLocale={locale as Locale}>
       <Header />
       {children}
       <Footer />
       {modal}
-    </UiProvider>
+    </AppProviders>
   );
 }
