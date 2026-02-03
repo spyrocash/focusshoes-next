@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState, type TouchEvent } from "react";
-import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import liff from "@line/liff";
 import type { Product } from "@/mocks/products";
 import { useStoreActions, useStoreState } from "@/stores/hooks";
 import { toast } from "react-hot-toast";
-import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "./icons";
+import { XIcon } from "./icons";
 import { formatNumber } from "@/i18n/locales";
 import { useTranslations } from "@/i18n/useTranslations";
 import { useUi } from "@/components/layout/UiProvider";
 import { CONTACT } from "@/data/contact";
+import { ImageGalleryCarousel } from "@/components/ImageGalleryCarousel";
 
 type Props = {
   product: Product;
@@ -21,12 +21,9 @@ type Props = {
 export function ProductDetailContent({ product, onClose }: Props) {
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   // const [quantity, setQuantity] = useState(1);
-  const [index, setIndex] = useState(0);
   const [sending, setSending] = useState(false);
   const { locale } = useUi();
   const t = useTranslations();
-  const touchStartX = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
 
   const liffReady = useStoreState((state) => state.liff.ready);
   const liffInitializing = useStoreState((state) => state.liff.initializing);
@@ -46,7 +43,6 @@ export function ProductDetailContent({ product, onClose }: Props) {
   useEffect(() => {
     setSending(false);
     setSelectedSize(null);
-    setIndex(0);
   }, [product.id]);
 
   useEffect(() => {
@@ -55,31 +51,6 @@ export function ProductDetailContent({ product, onClose }: Props) {
       lastInitErrorRef.current = liffInitError;
     }
   }, [liffInitError, t]);
-
-  const changeImage = (delta: number) => {
-    setIndex((prev) => {
-      const next = (prev + delta + product.images.length) % product.images.length;
-      return next;
-    });
-  };
-
-  const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
-    const touch = event.touches[0];
-    touchStartX.current = touch.clientX;
-    touchStartY.current = touch.clientY;
-  };
-
-  const handleTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
-    if (touchStartX.current === null || touchStartY.current === null) return;
-    const touch = event.changedTouches[0];
-    const deltaX = touch.clientX - touchStartX.current;
-    const deltaY = touch.clientY - touchStartY.current;
-    touchStartX.current = null;
-    touchStartY.current = null;
-
-    if (Math.abs(deltaX) < 40 || Math.abs(deltaX) < Math.abs(deltaY)) return;
-    changeImage(deltaX > 0 ? -1 : 1);
-  };
 
   const handleSendOrder = async () => {
     if (!selectedSize) {
@@ -136,8 +107,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
       toast.error(t("productMessageUnsupported"));
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : t("productMessageFailed");
+      const message = error instanceof Error ? error.message : t("productMessageFailed");
       toast.error(message);
     } finally {
       setSending(false);
@@ -158,10 +128,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
             <XIcon className="h-5 w-5" />
           </button>
         ) : (
-          <Link
-            href={`/${locale}`}
-            className="bg-white/10 p-2 transition hover:bg-white/20"
-          >
+          <Link href={`/${locale}`} className="bg-white/10 p-2 transition hover:bg-white/20">
             <XIcon className="h-5 w-5" />
           </Link>
         )}
@@ -172,68 +139,21 @@ export function ProductDetailContent({ product, onClose }: Props) {
       <div className="mx-auto w-full max-w-5xl lg:max-w-6xl lg:px-6">
         <div className="lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-8">
           <section className="relative bg-[var(--surface)] lg:rounded-2xl lg:border lg:border-[var(--border)] lg:overflow-hidden">
-            <div
-              className="relative aspect-square touch-pan-y"
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
-              <Image
-                src={product.images[index]}
-                alt={`${product.name} - ${t("productImageLabel")} ${index + 1}`}
-                fill
-                sizes="(max-width:768px) 100vw, 600px"
-                className="object-cover"
-                priority
-              />
-            </div>
-            {product.images.length > 1 && (
-              <>
-                <button
-                  onClick={() => changeImage(-1)}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/55 p-2 text-white shadow-lg backdrop-blur-sm transition-colors hover:bg-black/80"
-                  aria-label={t("productPreviousLabel")}
-                >
-                  <ChevronLeftIcon className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => changeImage(1)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/55 p-2 text-white shadow-lg backdrop-blur-sm transition-colors hover:bg-black/80"
-                  aria-label={t("productNextLabel")}
-                >
-                  <ChevronRightIcon className="h-5 w-5" />
-                </button>
-                {/* <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-sm text-white backdrop-blur-sm">
-                  {index + 1} / {product.images.length}
-                </div> */}
-              </>
-            )}
-            <div className="flex gap-2 overflow-x-auto bg-[var(--surface)] px-4 py-3">
-              {product.images.map((src, i) => (
-                <button
-                  key={src}
-                  onClick={() => setIndex(i)}
-                  className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border ${
-                    i === index ? "border-[var(--primary)]" : "border-[var(--border)]"
-                  }`}
-                >
-                  <Image
-                    src={src}
-                    alt={`${product.name} ${t("productImageLabel")} ${i + 1}`}
-                    fill
-                    className="object-cover"
-                    sizes="64px"
-                  />
-                </button>
-              ))}
-            </div>
+            <ImageGalleryCarousel
+              additionalClass="product-gallery"
+              showThumbnails
+              showBullets={false}
+              images={product.images.map((src, i) => ({
+                src,
+                alt: `${product.name} - ${t("productImageLabel")} ${i + 1}`,
+              }))}
+            />
           </section>
 
           <section className="space-y-4 p-4 lg:pt-6">
             <div>
               <div className="mb-1 text-sm text-[var(--muted)]">{product.category}</div>
-              <h2 className="text-xl font-semibold text-[var(--foreground)]">
-                {product.name}
-              </h2>
+              <h2 className="text-xl font-semibold text-[var(--foreground)]">{product.name}</h2>
             </div>
 
             <div className="flex items-end gap-2">
@@ -256,9 +176,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
               <h3 className="mb-2 font-medium text-[var(--foreground)]">
                 {t("productDetailsTitle")}
               </h3>
-              <p className="text-sm leading-relaxed text-[var(--muted)]">
-                {product.description}
-              </p>
+              <p className="text-sm leading-relaxed text-[var(--muted)]">{product.description}</p>
             </div>
 
             <div className="space-y-3">
@@ -316,12 +234,12 @@ export function ProductDetailContent({ product, onClose }: Props) {
                     ? t("productConnectingLine")
                     : t("productSendButton")}
               </button>
-          <a
-            href={`tel:${CONTACT.phone}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border)] px-4 py-3 text-[var(--foreground)] transition hover:border-white/30"
-          >
+              <a
+                href={`tel:${CONTACT.phone}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border)] px-4 py-3 text-[var(--foreground)] transition hover:border-white/30"
+              >
                 {t("productCallButton")}
               </a>
             </div>

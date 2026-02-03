@@ -67,3 +67,38 @@ button:disabled,
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.banner-gallery .image-gallery-slide img {
+  height: 11rem;
+  object-fit: cover;
+}
+
+@media (min-width: 640px) {
+  .banner-gallery .image-gallery-slide img {
+    height: 14rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .banner-gallery .image-gallery-slide img {
+    height: 16rem;
+  }
+}
+
+.product-gallery .image-gallery-slide-wrapper {
+  aspect-ratio: 1 / 1;
+  background: var(--surface);
+}
+
+.product-gallery .image-gallery-slide {
+  height: 100%;
+}
+
+.product-gallery .image-gallery-image {
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-gallery .image-gallery-content {
+  background: var(--surface);
+}
