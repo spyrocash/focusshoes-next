@@ -12,6 +12,7 @@ import { useTranslations } from "@/i18n/useTranslations";
 import { useUi } from "@/components/layout/UiProvider";
 import { CONTACT } from "@/data/contact";
 import { ImageGalleryCarousel } from "@/components/ImageGalleryCarousel";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
   product: Product;
@@ -26,6 +27,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
   const [liffInitError, setLiffInitError] = useState<string | null>(null);
   const { locale } = useUi();
   const t = useTranslations();
+  const searchParams = useSearchParams();
 
   const setProfile = useStoreActions((actions) => actions.liff.setProfile);
   const setProfileError = useStoreActions((actions) => actions.liff.setProfileError);
@@ -110,8 +112,11 @@ export function ProductDetailContent({ product, onClose }: Props) {
   }, [product.id]);
 
   useEffect(() => {
-    initLiff();
-  }, [initLiff]);
+    const liffState = searchParams?.get("liff.state");
+    if (liffState) {
+      initLiff();
+    }
+  }, [initLiff, searchParams]);
 
   useEffect(() => {
     if (liffInitError && liffInitError !== lastInitErrorRef.current) {
