@@ -143,9 +143,14 @@ export function ProductDetailContent({ product, onClose }: Props) {
               additionalClass="product-gallery"
               showThumbnails
               showBullets={false}
-              images={product.images.map((src, i) => ({
-                src,
-                alt: `${product.name} - ${t("productImageLabel")} ${i + 1}`,
+              showPlayButton={false}
+              showFullscreenButton={false}
+              showNav
+              items={product.images.map((src, i) => ({
+                original: src,
+                thumbnail: src,
+                originalAlt: `${product.name} - ${t("productImageLabel")} ${i + 1}`,
+                thumbnailAlt: `${product.name} - ${t("productImageLabel")} ${i + 1}`,
               }))}
             />
           </section>

@@ -1,27 +1,12 @@
 "use client";
 
 import ImageGallery from "react-image-gallery";
+import type { ReactImageGalleryProps } from "react-image-gallery";
 
-type GalleryImage = {
-  src: string;
-  alt: string;
-};
-
-type ImageGalleryCarouselProps = {
-  images: GalleryImage[];
-  additionalClass?: string;
-  autoPlay?: boolean;
-  slideInterval?: number;
-  showPlayButton?: boolean;
-  showFullscreenButton?: boolean;
-  showThumbnails?: boolean;
-  showNav?: boolean;
-  showBullets?: boolean;
-};
+type ImageGalleryCarouselProps = ReactImageGalleryProps;
 
 export function ImageGalleryCarousel({
-  images,
-  additionalClass,
+  items,
   autoPlay = true,
   slideInterval = 4000,
   showPlayButton = false,
@@ -29,20 +14,13 @@ export function ImageGalleryCarousel({
   showThumbnails = false,
   showNav = true,
   showBullets = true,
+  ...rest
 }: ImageGalleryCarouselProps) {
-  if (images.length === 0) return null;
-
-  const items = images.map((image) => ({
-    original: image.src,
-    thumbnail: image.src,
-    originalAlt: image.alt,
-    thumbnailAlt: image.alt,
-  }));
+  if (!items || items.length === 0) return null;
 
   return (
     <ImageGallery
       items={items}
-      additionalClass={additionalClass}
       autoPlay={autoPlay}
       slideInterval={slideInterval}
       showPlayButton={showPlayButton}
@@ -50,6 +28,7 @@ export function ImageGalleryCarousel({
       showThumbnails={showThumbnails}
       showNav={showNav}
       showBullets={showBullets}
+      {...rest}
     />
   );
 }
