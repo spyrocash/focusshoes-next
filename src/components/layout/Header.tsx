@@ -3,15 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  ClockIcon,
-  FacebookIcon,
-  LineIcon,
-  MapPinIcon,
-  MenuIcon,
-  PhoneIcon,
-  XIcon,
-} from "@/components/icons";
+import { MenuIcon, XIcon } from "@/components/icons";
+import { ContactInfo } from "@/components/ContactInfo";
 import { LOCALE_META, SUPPORTED_LOCALES, type Locale } from "@/i18n/locales";
 import { useTranslations } from "@/i18n/useTranslations";
 import { useUi } from "@/components/layout/UiProvider";
@@ -82,48 +75,8 @@ export function Header() {
 
       {menuOpen && (
         <div className="border-t border-[var(--border)] bg-[var(--surface)] px-4 py-3 sm:px-6">
-          <div className="mx-auto max-w-5xl space-y-2 text-sm lg:max-w-6xl lg:px-0">
-            <div className="flex items-center gap-2">
-              <PhoneIcon className="h-4 w-4 text-[var(--primary)]" />
-              <a
-                href="tel:+66926644624"
-                className="underline-offset-2 hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t("headerContactPhone")}
-              </a>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPinIcon className="h-4 w-4 text-[var(--primary)]" />
-              <span>{t("headerContactAddress")}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <ClockIcon className="h-4 w-4 text-[var(--primary)]" />
-              <span>{t("headerContactHours")}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <FacebookIcon className="h-4 w-4 text-[var(--primary)]" />
-              <a
-                href="https://www.facebook.com/focusshoes.th"
-                className="underline-offset-2 hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t("headerContactFacebook")}
-              </a>
-            </div>
-            <div className="flex items-center gap-2">
-              <LineIcon className="h-4 w-4 text-[var(--primary)]" />
-              <a
-                href="https://line.me/R/ti/p/focusshoes"
-                className="underline-offset-2 hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t("headerContactLine")}
-              </a>
-            </div>
+          <div className="mx-auto max-w-5xl lg:max-w-6xl lg:px-0">
+            <ContactInfo />
           </div>
         </div>
       )}

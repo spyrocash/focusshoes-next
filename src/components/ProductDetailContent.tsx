@@ -11,6 +11,7 @@ import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "./icons";
 import { formatNumber } from "@/i18n/locales";
 import { useTranslations } from "@/i18n/useTranslations";
 import { useUi } from "@/components/layout/UiProvider";
+import { CONTACT } from "@/data/contact";
 
 type Props = {
   product: Product;
@@ -291,12 +292,12 @@ export function ProductDetailContent({ product, onClose }: Props) {
                     ? t("productConnectingLine")
                     : t("productSendButton")}
               </button>
-              <a
-                href="tel:+66926644624"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border)] px-4 py-3 text-[var(--foreground)] transition hover:border-white/30"
-              >
+          <a
+            href={`tel:${CONTACT.phone}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border)] px-4 py-3 text-[var(--foreground)] transition hover:border-white/30"
+          >
                 {t("productCallButton")}
               </a>
             </div>
