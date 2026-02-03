@@ -1,5 +1,4 @@
-// import { notFound } from "next/navigation";
-import liff from "@line/liff";
+import { notFound } from "next/navigation";
 import { ProductDetailPage } from "@/features/products/ProductDetailPage";
 import { getProductPageData } from "@/lib/product-page";
 
@@ -13,37 +12,18 @@ export default async function Page({ params, searchParams }: PageProps) {
   const idParam = (await searchParams)?.id;
   const id = Array.isArray(idParam) ? idParam[0] : idParam;
 
+  console.log({ params, searchParams, localeParam, id });
+
   if (!id) {
-    await liff.sendMessages([
-      { type: "text", text: JSON.stringify({ params, searchParams, localeParam, id }, null, 2) },
-    ]);
-
-    return (
-      <pre style={{ whiteSpace: "pre-wrap" }}>
-        {JSON.stringify({ params, searchParams, localeParam, id }, null, 2)}
-      </pre>
-    );
-
-    // notFound();
+    notFound();
   }
 
   const { product, productJsonLd, breadcrumbJsonLd } = getProductPageData(localeParam, id);
 
+  console.log({ params, searchParams, localeParam, id, product });
+
   if (!product) {
-    await liff.sendMessages([
-      {
-        type: "text",
-        text: JSON.stringify({ params, searchParams, localeParam, id, product }, null, 2),
-      },
-    ]);
-
-    return (
-      <pre style={{ whiteSpace: "pre-wrap" }}>
-        {JSON.stringify({ params, searchParams, localeParam, id, product }, null, 2)}
-      </pre>
-    );
-
-    // notFound();
+    notFound();
   }
 
   return (
