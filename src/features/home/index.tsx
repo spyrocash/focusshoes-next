@@ -16,7 +16,7 @@ function Hero() {
   const t = useTranslations();
 
   return (
-    <div className="bg-gradient-to-br from-[var(--surface)] via-[var(--surface)] to-[var(--background)] px-4 py-6">
+    <div className="bg-gradient-to-br from-[var(--surface)] via-[var(--surface)] to-[var(--background)] px-4 py-4">
       <div className="mx-auto max-w-5xl">
         <p className="mb-4 mt-2 max-w-3xl leading-relaxed text-[var(--muted)]">
           {t("heroDescription")}

@@ -39,10 +39,8 @@ export function HomeClient({ products, hero }: HomeClientProps) {
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+      <BannerSlider images={BANNERS} />
       {hero}
-      <div className="py-4">
-        <BannerSlider images={BANNERS} />
-      </div>
       <CategoryFilter
         menuOpen={menuOpen}
         selectedCategory={selectedCategory}
