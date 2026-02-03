@@ -19,7 +19,13 @@ export default async function Page({ params, searchParams }: PageProps) {
   const { product, productJsonLd, breadcrumbJsonLd } = getProductPageData(localeParam, id);
 
   if (!product) {
-    notFound();
+    // notFound();
+
+    return (
+      <pre style={{ whiteSpace: "pre-wrap" }}>
+        {JSON.stringify({ params, searchParams, localeParam, id, product }, null, 2)}
+      </pre>
+    );
   }
 
   return (
