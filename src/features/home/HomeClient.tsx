@@ -2,7 +2,9 @@
 
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
+import { BannerSlider } from "@/components/BannerSlider";
 import { ProductCard } from "@/components/ProductCard";
+import { BANNERS } from "@/data/banners";
 import type { Product } from "@/mocks/products";
 import { useUi } from "@/components/layout/UiProvider";
 import { useTranslations } from "@/i18n/useTranslations";
@@ -38,6 +40,9 @@ export function HomeClient({ products, hero }: HomeClientProps) {
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       {hero}
+      <div className="py-4">
+        <BannerSlider images={BANNERS} />
+      </div>
       <CategoryFilter
         menuOpen={menuOpen}
         selectedCategory={selectedCategory}

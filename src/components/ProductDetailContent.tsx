@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type TouchEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import liff from "@line/liff";
@@ -25,6 +25,8 @@ export function ProductDetailContent({ product, onClose }: Props) {
   const [sending, setSending] = useState(false);
   const { locale } = useUi();
   const t = useTranslations();
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
 
   const liffReady = useStoreState((state) => state.liff.ready);
   const liffInitializing = useStoreState((state) => state.liff.initializing);
@@ -59,6 +61,24 @@ export function ProductDetailContent({ product, onClose }: Props) {
       const next = (prev + delta + product.images.length) % product.images.length;
       return next;
     });
+  };
+
+  const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0];
+    touchStartX.current = touch.clientX;
+    touchStartY.current = touch.clientY;
+  };
+
+  const handleTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - touchStartX.current;
+    const deltaY = touch.clientY - touchStartY.current;
+    touchStartX.current = null;
+    touchStartY.current = null;
+
+    if (Math.abs(deltaX) < 40 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+    changeImage(deltaX > 0 ? -1 : 1);
   };
 
   const handleSendOrder = async () => {
@@ -152,7 +172,11 @@ export function ProductDetailContent({ product, onClose }: Props) {
       <div className="mx-auto w-full max-w-5xl lg:max-w-6xl lg:px-6">
         <div className="lg:grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-8">
           <section className="relative bg-[var(--surface)] lg:rounded-2xl lg:border lg:border-[var(--border)] lg:overflow-hidden">
-            <div className="relative aspect-square">
+            <div
+              className="relative aspect-square touch-pan-y"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
               <Image
                 src={product.images[index]}
                 alt={`${product.name} - ${t("productImageLabel")} ${index + 1}`}

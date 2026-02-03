@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { usePathname, useRouter } from "next/navigation";
 import { MenuIcon, XIcon } from "@/components/icons";
 import { ContactInfo } from "@/components/ContactInfo";
+import { Logo } from "@/components/Logo";
 import { LOCALE_META, SUPPORTED_LOCALES, type Locale } from "@/i18n/locales";
 import { useTranslations } from "@/i18n/useTranslations";
 import { useUi } from "@/components/layout/UiProvider";
@@ -46,9 +47,15 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--surface-veil)] text-[var(--foreground)] shadow-lg backdrop-blur">
       <div className="mx-auto max-w-5xl px-4 py-3 sm:px-6 lg:max-w-6xl lg:px-0">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold">{t("headerTitle")}</h1>
-            <p className="text-xs text-[var(--muted)]">{t("headerTagline")}</p>
+          <div className="flex items-center space-x-2">
+            <div className="flex items-center">
+              <Logo />
+              <h2 className="sr-only">{t("heroTitle")}</h2>
+            </div>
+            <div>
+              <h1 className="text-xl font-bold">{t("headerTitle")}</h1>
+              <p className="text-xs text-[var(--muted)]">{t("headerTagline")}</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -98,52 +105,52 @@ export function Header() {
             >
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-sm font-semibold">{t("headerLanguageLabel")}</h2>
-              <button
-                type="button"
-                className="rounded-full p-1 text-[var(--muted)] transition-colors hover:text-[var(--foreground)]"
-                onClick={() => setLanguageOpen(false)}
-                aria-label={t("productCloseLabel")}
-              >
-                <XIcon className="h-4 w-4" />
-              </button>
-            </div>
-            <div className="space-y-2">
-              {SUPPORTED_LOCALES.map((value) => {
-                const meta = LOCALE_META[value];
-                const isActive = value === locale;
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => handleLocaleSelect(value)}
-                    className={`flex w-full items-center justify-between rounded-xl border px-3 py-2 text-left text-sm transition-colors ${
-                      isActive
-                        ? "border-[var(--primary)] bg-[var(--primary)]/10"
-                        : "border-[var(--border)] hover:bg-[var(--surface-veil)]"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg" aria-hidden="true">
-                        {meta.flag}
-                      </span>
-                      <div>
-                        <p className="font-medium text-[var(--foreground)]">{meta.label}</p>
-                        <p className="text-xs uppercase text-[var(--muted)]">{value}</p>
+                <button
+                  type="button"
+                  className="rounded-full p-1 text-[var(--muted)] transition-colors hover:text-[var(--foreground)]"
+                  onClick={() => setLanguageOpen(false)}
+                  aria-label={t("productCloseLabel")}
+                >
+                  <XIcon className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="space-y-2">
+                {SUPPORTED_LOCALES.map((value) => {
+                  const meta = LOCALE_META[value];
+                  const isActive = value === locale;
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => handleLocaleSelect(value)}
+                      className={`flex w-full items-center justify-between rounded-xl border px-3 py-2 text-left text-sm transition-colors ${
+                        isActive
+                          ? "border-[var(--primary)] bg-[var(--primary)]/10"
+                          : "border-[var(--border)] hover:bg-[var(--surface-veil)]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg" aria-hidden="true">
+                          {meta.flag}
+                        </span>
+                        <div>
+                          <p className="font-medium text-[var(--foreground)]">{meta.label}</p>
+                          <p className="text-xs uppercase text-[var(--muted)]">{value}</p>
+                        </div>
                       </div>
-                    </div>
-                    {isActive && (
-                      <span className="text-xs font-semibold text-[var(--primary)]">
-                        {t("headerLanguageActive")}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+                      {isActive && (
+                        <span className="text-xs font-semibold text-[var(--primary)]">
+                          {t("headerLanguageActive")}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        </div>,
-        document.body,
-      )}
+          </div>,
+          document.body,
+        )}
     </header>
   );
 }
