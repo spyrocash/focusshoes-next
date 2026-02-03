@@ -9,7 +9,6 @@ import type { Product } from "@/mocks/products";
 import { useUi } from "@/components/layout/UiProvider";
 import { useTranslations } from "@/i18n/useTranslations";
 import { useStoreActions } from "@/stores/hooks";
-import liff from "@line/liff";
 
 type HomeClientProps = {
   products: Product[];
@@ -20,35 +19,12 @@ export function HomeClient({ products, hero }: HomeClientProps) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const { menuOpen, locale } = useUi();
   const t = useTranslations();
-  const setProfile = useStoreActions((actions) => actions.liff.setProfile);
-  const setProfileError = useStoreActions((actions) => actions.liff.setProfileError);
+  const initLiff = useStoreActions((actions) => actions.liff.initLiff);
 
   useEffect(() => {
     if (process.env.NODE_ENV === "development") return;
-    const liffId = process.env.NEXT_PUBLIC_HOME_LIFF_ID;
-    if (!liffId) return;
-
-    const init = async () => {
-      try {
-        await liff.init({ liffId });
-        if (liff.isLoggedIn()) {
-          const profile = await liff.getProfile();
-          setProfile({
-            userId: profile.userId,
-            displayName: profile.displayName,
-            pictureUrl: profile.pictureUrl,
-            statusMessage: profile.statusMessage,
-          });
-        }
-      } catch (error: unknown) {
-        const message =
-          error instanceof Error ? error.message : "ไม่สามารถเริ่มต้น LIFF ได้";
-        setProfileError(message);
-      }
-    };
-
-    init();
-  }, [setProfile, setProfileError]);
+    initLiff({ liffId: process.env.NEXT_PUBLIC_HOME_LIFF_ID });
+  }, [initLiff]);
 
   const categories = useMemo(
     () => [
