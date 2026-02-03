@@ -4,23 +4,21 @@ import { getProductPageData } from "@/lib/product-page";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
-  searchParams?: Promise<{ id?: string | string[] }>;
+  searchParams?: Promise<{ id?: string | string[]; "liff.state"?: string | string[] }>;
 };
 
 export default async function Page({ params, searchParams }: PageProps) {
   const { locale: localeParam } = await params;
   const idParam = (await searchParams)?.id;
+  const liffStateParam = (await searchParams)?.["liff.state"];
   const id = Array.isArray(idParam) ? idParam[0] : idParam;
+  const resolvedId = id ?? resolveLiffStateId(liffStateParam);
 
-  console.log({ params, searchParams, localeParam, id });
-
-  if (!id) {
+  if (!resolvedId) {
     notFound();
   }
 
-  const { product, productJsonLd, breadcrumbJsonLd } = getProductPageData(localeParam, id);
-
-  console.log({ params, searchParams, localeParam, id, product });
+  const { product, productJsonLd, breadcrumbJsonLd } = getProductPageData(localeParam, resolvedId);
 
   if (!product) {
     notFound();
@@ -38,10 +36,15 @@ export default async function Page({ params, searchParams }: PageProps) {
         suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <pre style={{ whiteSpace: "pre-wrap" }}>
-        {JSON.stringify({ params, searchParams }, null, 2)}
-      </pre>
       <ProductDetailPage product={product} />
     </>
   );
+}
+
+function resolveLiffStateId(liffState: string | string[] | undefined) {
+  if (!liffState) return null;
+  const value = Array.isArray(liffState) ? liffState[0] : liffState;
+  const state = value.startsWith("?") ? value : `?${value}`;
+  const params = new URLSearchParams(state);
+  return params.get("id");
 }
