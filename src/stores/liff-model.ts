@@ -60,6 +60,8 @@ export const liffModel: LiffModel = {
     state.liffId = payload;
   }),
   initLiff: thunk(async (actions, payload, { getState }) => {
+    if (!liff.isInClient()) return true;
+
     if (process.env.NODE_ENV === "development") {
       actions.setError("โหมดพัฒนา: ปิดการเชื่อมต่อ LIFF");
       return false;
