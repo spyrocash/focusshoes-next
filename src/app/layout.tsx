@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     siteName: "Focus Shoes",
     images: [
       {
-        url: "/logo_focusshoes_1-1.jpg",
+        url: "/logo-600x600.jpg.jpg",
         width: 1200,
         height: 630,
         alt: "Focus Shoes catalog",
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Focus Shoes | รองเท้าสตรีหนังแท้",
     description: "สวย ใส่สบาย ราคาโรงงาน พร้อมสั่งตัดเฉพาะคุณ",
-    images: ["/logo_focusshoes_1-1.jpg"],
+    images: ["/logo-600x600.jpg.jpg"],
   },
 };
 
