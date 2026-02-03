@@ -3,23 +3,20 @@ import { ProductDetailPage } from "@/features/products/ProductDetailPage";
 import { getProductPageData } from "@/lib/product-page";
 
 type PageProps = {
-  params: { locale: string };
-  searchParams?: { id?: string | string[] };
+  params: Promise<{ locale: string }>;
+  searchParams?: Promise<{ id?: string | string[] }>;
 };
 
 export default async function Page({ params, searchParams }: PageProps) {
-  const { locale: localeParam } = params;
-  const idParam = searchParams?.id;
+  const { locale: localeParam } = await params;
+  const idParam = (await searchParams)?.id;
   const id = Array.isArray(idParam) ? idParam[0] : idParam;
 
   if (!id) {
     notFound();
   }
 
-  const { product, productJsonLd, breadcrumbJsonLd } = getProductPageData(
-    localeParam,
-    id,
-  );
+  const { product, productJsonLd, breadcrumbJsonLd } = getProductPageData(localeParam, id);
 
   if (!product) {
     notFound();
@@ -37,6 +34,9 @@ export default async function Page({ params, searchParams }: PageProps) {
         suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
+      <pre style={{ whiteSpace: "pre-wrap" }}>
+        {JSON.stringify({ params, searchParams }, null, 2)}
+      </pre>
       <ProductDetailPage product={product} />
     </>
   );
