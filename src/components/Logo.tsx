@@ -8,7 +8,7 @@ export function Logo() {
         alt="Focus Shoes"
         fill
         sizes="56px"
-        className="object-contain"
+        className="object-contain p-1"
         priority
       />
     </div>
