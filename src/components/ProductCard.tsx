@@ -58,13 +58,10 @@ export function ProductCard({
           )}
         </div>
         <div className="p-1 text-[var(--foreground)]">
-          <h3 className="line-clamp-2 text-sm font-medium text-[var(--foreground)]">
-            {name}
-          </h3>
+          <h3 className="line-clamp-2 text-sm font-medium text-[var(--foreground)]">{name}</h3>
           <div className="flex items-center justify-between">
-            <span className="text-medium font-semibold text-[var(--primary)]">
-              ฿{priceDisplay}
-            </span>
+            {/* <span className="text-medium font-semibold text-[var(--primary)]"> */}
+            <span className="text-medium font-semibold text-[var(--muted)]">฿{priceDisplay}</span>
           </div>
         </div>
       </Link>
@@ -102,13 +99,9 @@ export function ProductCard({
         )}
       </div>
       <div className="p-1 text-[var(--foreground)]">
-        <h3 className="line-clamp-2 text-sm font-medium text-[var(--foreground)]">
-          {name}
-        </h3>
+        <h3 className="line-clamp-2 text-sm font-medium text-[var(--foreground)]">{name}</h3>
         <div className="flex items-center justify-between">
-          <span className="text-medium font-semibold text-[var(--primary)]">
-            ฿{priceDisplay}
-          </span>
+          <span className="text-medium font-semibold text-[var(--muted)]">฿{priceDisplay}</span>
         </div>
       </div>
     </div>

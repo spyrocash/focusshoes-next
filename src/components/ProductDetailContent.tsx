@@ -162,7 +162,8 @@ export function ProductDetailContent({ product, onClose }: Props) {
             </div>
 
             <div className="flex items-end gap-2">
-              <span className="text-3xl font-bold text-[var(--primary)]">
+              {/* <span className="text-3xl font-bold text-[var(--primary)]"> */}
+              <span className="text-3xl font-bold text-[var(--muted)]">
                 ฿{formatNumber(Number(product.price), locale)}
               </span>
               {/* <span className="mb-1 text-lg text-[var(--muted)] line-through">
