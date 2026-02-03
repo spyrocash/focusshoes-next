@@ -8,6 +8,8 @@ type PageProps = {
 
 export default async function Page({ params }: PageProps) {
   const { id, locale: localeParam } = await params;
+  alert(`id: ${id}`);
+  alert(`localeParam: ${localeParam}`);
   const { product, productJsonLd, breadcrumbJsonLd } = getProductPageData(
     localeParam,
     id,
