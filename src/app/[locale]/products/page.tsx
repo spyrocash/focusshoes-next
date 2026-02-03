@@ -3,11 +3,18 @@ import { ProductDetailPage } from "@/features/products/ProductDetailPage";
 import { getProductPageData } from "@/lib/product-page";
 
 type PageProps = {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ id?: string }>;
 };
 
-export default async function Page({ params }: PageProps) {
-  const { id, locale: localeParam } = await params;
+export default async function Page({ params, searchParams }: PageProps) {
+  const { locale: localeParam } = await params;
+  const { id } = await searchParams;
+
+  if (!id) {
+    notFound();
+  }
+
   const { product, productJsonLd, breadcrumbJsonLd } = getProductPageData(
     localeParam,
     id,
