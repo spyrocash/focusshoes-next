@@ -44,8 +44,8 @@ export function HomeClient({ products, hero }: HomeClientProps) {
         setSelectedCategory={setSelectedCategory}
         categories={categories}
       />
-      <main className="mx-auto max-w-5xl py-2">
-        <div className="mb-2 flex items-center justify-between px-4 sm:px-6">
+      <main className="mx-auto max-w-5xl py-2 lg:max-w-6xl">
+        <div className="mb-2 flex items-center justify-between px-4 sm:px-6 lg:px-0">
           <div>
             <h3 className="text-lg font-semibold text-[var(--foreground)]">
               {t("homeAllProductsTitle")} ({filteredProducts.length})
@@ -55,7 +55,7 @@ export function HomeClient({ products, hero }: HomeClientProps) {
             {t("homeBadge")}
           </span>
         </div>
-        <div className="grid grid-cols-2 gap-1 px-1 sm:grid-cols-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-1 px-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-3 lg:px-0">
           {filteredProducts.map((product, index) => (
             <ProductCard
               key={product.id}
@@ -97,7 +97,7 @@ function CategoryFilter({
       className="sticky z-50 border-b border-[var(--border)] bg-[var(--surface-veil)] backdrop-blur"
       style={{ top }}
     >
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-5xl lg:max-w-6xl">
         <div className="no-scrollbar flex gap-2 overflow-x-auto px-4 py-3">
           {categories.map((cat) => (
             <button

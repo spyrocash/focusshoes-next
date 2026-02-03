@@ -51,7 +51,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--surface-veil)] text-[var(--foreground)] shadow-lg backdrop-blur">
-      <div className="px-4 py-3 sm:px-6">
+      <div className="mx-auto max-w-5xl px-4 py-3 sm:px-6 lg:max-w-6xl lg:px-0">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold">{t("headerTitle")}</h1>
@@ -82,7 +82,7 @@ export function Header() {
 
       {menuOpen && (
         <div className="border-t border-[var(--border)] bg-[var(--surface)] px-4 py-3 sm:px-6">
-          <div className="space-y-2 text-sm">
+          <div className="mx-auto max-w-5xl space-y-2 text-sm lg:max-w-6xl lg:px-0">
             <div className="flex items-center gap-2">
               <PhoneIcon className="h-4 w-4 text-[var(--primary)]" />
               <a
@@ -95,7 +95,7 @@ export function Header() {
               </a>
             </div>
             <div className="flex items-center gap-2">
-              <MapPinIcon className="h-5 w-5 text-[var(--primary)]" />
+              <MapPinIcon className="h-4 w-4 text-[var(--primary)]" />
               <span>{t("headerContactAddress")}</span>
             </div>
             <div className="flex items-center gap-2">
