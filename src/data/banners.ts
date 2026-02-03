@@ -11,4 +11,4 @@ export const BANNERS = [
     src: "/products/A16/20230403_220830.jpg",
     alt: "Focus Shoes banner 3",
   },
-] as const;
+];
