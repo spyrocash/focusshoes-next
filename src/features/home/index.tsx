@@ -43,7 +43,8 @@ function Hero() {
 
 function Feature({ icon, label }: { icon: ReactNode; label: string }) {
   return (
-    <div className="cursor-default rounded-lg border border-[var(--border)] bg-[var(--surface)]/80 p-3 text-center shadow-none">
+    // <div className="cursor-default rounded-lg border border-[var(--border)] bg-[var(--surface)]/80 p-3 text-center shadow-none">
+    <div className="cursor-default p-3 text-center shadow-none">
       <div className="mx-auto mb-1 w-fit">{icon}</div>
       <p className="text-xs font-medium text-[var(--foreground)]">{label}</p>
     </div>
