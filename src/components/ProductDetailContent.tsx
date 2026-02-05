@@ -13,6 +13,7 @@ import { useUi } from "@/components/layout/UiProvider";
 import { CONTACT } from "@/data/contact";
 import { ImageGalleryCarousel } from "@/components/ImageGalleryCarousel";
 import { useSearchParams } from "next/navigation";
+import { buildLiffUrl } from "@/lib/line";
 
 type Props = {
   product: Product;
@@ -76,6 +77,17 @@ export function ProductDetailContent({ product, onClose }: Props) {
     setSending(true);
 
     try {
+      if (!liff.isInClient()) {
+        toast(t("productRedirectToLine"));
+        const liffUrl = buildLiffUrl(liffId, { id: product.id });
+        window.location.href = liffUrl;
+        window.setTimeout(() => {
+          toast.error(t("productRedirectFallback"));
+          window.location.href = CONTACT.lineUrl;
+        }, 2000);
+        return;
+      }
+
       if (!liffReady) {
         const ready = await initLiff({ withLoginOnExternalBrowser: true, liffId });
         if (!ready) {
@@ -99,24 +111,9 @@ export function ProductDetailContent({ product, onClose }: Props) {
         `${t("productOrderSku")}: ${product.id}`,
       ].join("\n");
 
-      if (liff.isInClient()) {
-        await liff.sendMessages([{ type: "text", text: messageText }]);
-        toast.success(t("productMessageSent"));
-        liff.closeWindow();
-        return;
-      }
-
-      if (liff.isApiAvailable("shareTargetPicker")) {
-        const result = await liff.shareTargetPicker([{ type: "text", text: messageText }]);
-        if (result) {
-          toast.success(t("productMessageSent"));
-        } else {
-          toast(t("productMessageCanceled"));
-        }
-        return;
-      }
-
-      toast.error(t("productMessageUnsupported"));
+      await liff.sendMessages([{ type: "text", text: messageText }]);
+      toast.success(t("productMessageSent"));
+      liff.closeWindow();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : t("productMessageFailed");
       toast.error(message);
