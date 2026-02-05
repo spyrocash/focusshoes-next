@@ -75,6 +75,7 @@ export function HomeClient({ products, hero }: HomeClientProps) {
               price={product.price}
               rating={product.rating}
               image={product.images[0]}
+              colors={product.colors}
               inStock={product.inStock}
               priority={index < 4}
               href={`/${locale}/products/${product.id}`}

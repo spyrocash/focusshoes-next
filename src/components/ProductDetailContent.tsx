@@ -21,6 +21,7 @@ type Props = {
 
 export function ProductDetailContent({ product, onClose }: Props) {
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   // const [quantity, setQuantity] = useState(1);
   const [sending, setSending] = useState(false);
   const { locale } = useUi();
@@ -45,6 +46,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
   useEffect(() => {
     setSending(false);
     setSelectedSize(null);
+    setSelectedColorIndex(0);
   }, [product.id]);
 
   useEffect(() => {
@@ -124,6 +126,12 @@ export function ProductDetailContent({ product, onClose }: Props) {
   };
 
   const showClose = Boolean(onClose);
+  const colors = product.colors ?? [];
+  const showColors = colors.length > 1;
+  const selectedColor = colors[selectedColorIndex];
+  const galleryImages = selectedColor?.image
+    ? [selectedColor.image, ...product.images.filter((img) => img !== selectedColor.image)]
+    : product.images;
 
   return (
     <div className="relative bg-[var(--surface)] text-[var(--foreground)]">
@@ -155,7 +163,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
               showPlayButton={false}
               showFullscreenButton={false}
               showNav
-              items={product.images.map((src, i) => ({
+              items={galleryImages.map((src, i) => ({
                 original: src,
                 thumbnail: src,
                 originalAlt: `${product.name} - ${t("productImageLabel")} ${i + 1}`,
@@ -193,6 +201,35 @@ export function ProductDetailContent({ product, onClose }: Props) {
               </h3>
               <p className="text-sm leading-relaxed text-[var(--muted)]">{product.description}</p>
             </div>
+
+            {colors.length > 0 && (
+              <div className="space-y-3">
+                <h3 className="font-medium text-[var(--foreground)]">
+                  {t("productColorTitle")}
+                </h3>
+                <div className="flex flex-wrap items-center gap-2">
+                  {colors.map((color, index) => (
+                    <button
+                      key={color.id}
+                      type="button"
+                      onClick={() => setSelectedColorIndex(index)}
+                      className={`flex items-center gap-2 rounded-full border px-3 py-1 text-sm ${
+                        index === selectedColorIndex
+                          ? "border-[var(--primary)] bg-[var(--primary)]/10 text-[var(--foreground)]"
+                          : "border-[var(--border)] text-[var(--muted)]"
+                      }`}
+                    >
+                      <span
+                        className="h-4 w-4 rounded-full border border-white/30"
+                        style={{ backgroundColor: color.swatch }}
+                        aria-hidden="true"
+                      />
+                      {color.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="space-y-3">
               <h3 className="font-medium text-[var(--foreground)]">

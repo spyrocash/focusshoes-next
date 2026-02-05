@@ -7,6 +7,12 @@ export type Product = {
   rating: number;
   inStock: boolean;
   color: string;
+  colors?: {
+    id: string;
+    label: string;
+    swatch: string;
+    image: string;
+  }[];
   image: string;
   images: string[];
   description: string;
@@ -25,6 +31,14 @@ export const products: Product[] = [
     rating: 5,
     inStock: true,
     color: "from-[#c82527]/20 via-[#ff938f]/18 to-transparent",
+    colors: [
+      {
+        id: "white",
+        label: "ขาว",
+        swatch: "#f5f5f4",
+        image: "/products/N2000-1/20230403_232214.jpg",
+      },
+    ],
     image: "/products/N2000-1/20230403_232214.jpg",
     images: [
       "/products/N2000-1/20230403_232134.jpg",
@@ -51,6 +65,14 @@ export const products: Product[] = [
     rating: 5,
     inStock: true,
     color: "from-[#c82527]/20 via-[#ffb3ae]/18 to-transparent",
+    colors: [
+      {
+        id: "white",
+        label: "ขาว",
+        swatch: "#f5f5f4",
+        image: "/products/N2000-2/20230403_231828.jpg",
+      },
+    ],
     image: "/products/N2000-2/20230403_231828.jpg",
     images: [
       "/products/N2000-2/20230403_231828.jpg",
@@ -78,6 +100,14 @@ export const products: Product[] = [
     rating: 4.8,
     inStock: true,
     color: "from-[#c82527]/18 via-[#ffc8c2]/12 to-transparent",
+    colors: [
+      {
+        id: "pink",
+        label: "ชมพูกะปิ",
+        swatch: "#d9a4a5",
+        image: "/products/299/20230403_224351.jpg",
+      },
+    ],
     image: "/products/299/20230403_224351.jpg",
     images: [
       "/products/299/20230403_224351.jpg",
@@ -103,6 +133,14 @@ export const products: Product[] = [
     rating: 4.8,
     inStock: true,
     color: "from-[#c82527]/16 via-[#b2b2b2]/10 to-transparent",
+    colors: [
+      {
+        id: "black",
+        label: "ดำ",
+        swatch: "#1f2937",
+        image: "/products/0260/20230403_225207.jpg",
+      },
+    ],
     image: "/products/0260/20230403_225207.jpg",
     images: [
       "/products/0260/20230403_225207.jpg",
@@ -129,6 +167,14 @@ export const products: Product[] = [
     rating: 4.8,
     inStock: true,
     color: "from-[#c82527]/18 via-[#e0c8a6]/12 to-transparent",
+    colors: [
+      {
+        id: "tan",
+        label: "น้ำตาล",
+        swatch: "#b08968",
+        image: "/products/265/20230403_231358.jpg",
+      },
+    ],
     image: "/products/265/20230403_231358.jpg",
     images: [
       "/products/265/20230403_231358.jpg",
@@ -159,6 +205,32 @@ export const products: Product[] = [
     rating: 4.9,
     inStock: true,
     color: "from-[#c82527]/18 via-[#d6d6d6]/12 to-transparent",
+    colors: [
+      {
+        id: "white",
+        label: "ขาว",
+        swatch: "#f5f5f4",
+        image: "/products/A16/20230403_220830.jpg",
+      },
+      {
+        id: "gray",
+        label: "เทา",
+        swatch: "#9ca3af",
+        image: "/products/A16/20230403_220830.jpg",
+      },
+      {
+        id: "black",
+        label: "ดำ",
+        swatch: "#111827",
+        image: "/products/A16/20230403_220830.jpg",
+      },
+      {
+        id: "gold",
+        label: "ทอง",
+        swatch: "#d6b669",
+        image: "/products/A16/20230403_220830.jpg",
+      },
+    ],
     image: "/products/A16/20230403_220830.jpg",
     images: [
       "/products/A16/20230403_215746.jpg",

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import Link from "next/link";
 import { formatNumber } from "@/i18n/locales";
 import { useTranslations } from "@/i18n/useTranslations";
@@ -13,6 +14,7 @@ export type ProductCardProps = {
   price: number | string;
   rating: number;
   image: string;
+  colors?: { id: string; label: string; swatch: string; image: string }[];
   inStock: boolean;
   priority?: boolean;
   href?: string;
@@ -23,6 +25,7 @@ export function ProductCard({
   name,
   price,
   image,
+  colors,
   inStock,
   priority = false,
   href,
@@ -31,6 +34,14 @@ export function ProductCard({
   const { locale } = useUi();
   const t = useTranslations();
   const priceDisplay = formatNumber(Number(price), locale);
+  const [selectedColor, setSelectedColor] = useState(0);
+  const displayImage = colors?.[selectedColor]?.image ?? image;
+  const showColors = (colors?.length ?? 0) > 1;
+  const handleColorSelect = (index: number) => (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setSelectedColor(index);
+  };
   if (href) {
     return (
       <Link
@@ -42,7 +53,7 @@ export function ProductCard({
       >
         <div className="relative aspect-7/8 overflow-hidden rounded-lg">
           <Image
-            src={image}
+            src={displayImage}
             alt={name}
             fill
             sizes="(max-width:768px) 50vw, 300px"
@@ -58,7 +69,27 @@ export function ProductCard({
           )}
         </div>
         <div className="p-1 text-[var(--foreground)]">
-          <h3 className="line-clamp-2 text-sm font-medium text-[var(--foreground)]">{name}</h3>
+          <h3 className="line-clamp-2 text-sm font-medium text-[var(--foreground)]">
+            {name}
+          </h3>
+          {showColors && (
+            <div className="mt-1 flex items-center gap-1">
+              {colors?.map((color, index) => (
+                <button
+                  key={color.id}
+                  type="button"
+                  onClick={handleColorSelect(index)}
+                  className={`h-4 w-4 rounded-full border ${
+                    index === selectedColor
+                      ? "border-[var(--foreground)]"
+                      : "border-white/30"
+                  }`}
+                  style={{ backgroundColor: color.swatch }}
+                  aria-label={color.label}
+                />
+              ))}
+            </div>
+          )}
           <div className="flex items-center justify-between">
             {/* <span className="text-medium font-semibold text-[var(--primary)]"> */}
             <span className="text-medium font-semibold text-[var(--muted)]">฿{priceDisplay}</span>
@@ -83,7 +114,7 @@ export function ProductCard({
     >
       <div className="relative aspect-7/8 rounded-lg overflow-hidden">
         <Image
-          src={image}
+          src={displayImage}
           alt={name}
           fill
           sizes="(max-width:768px) 50vw, 300px"
@@ -99,7 +130,27 @@ export function ProductCard({
         )}
       </div>
       <div className="p-1 text-[var(--foreground)]">
-        <h3 className="line-clamp-2 text-sm font-medium text-[var(--foreground)]">{name}</h3>
+        <h3 className="line-clamp-2 text-sm font-medium text-[var(--foreground)]">
+          {name}
+        </h3>
+        {showColors && (
+          <div className="mt-1 flex items-center gap-1">
+            {colors?.map((color, index) => (
+              <button
+                key={color.id}
+                type="button"
+                onClick={handleColorSelect(index)}
+                className={`h-4 w-4 rounded-full border ${
+                  index === selectedColor
+                    ? "border-[var(--foreground)]"
+                    : "border-white/30"
+                }`}
+                style={{ backgroundColor: color.swatch }}
+                aria-label={color.label}
+              />
+            ))}
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <span className="text-medium font-semibold text-[var(--muted)]">฿{priceDisplay}</span>
         </div>
