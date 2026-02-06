@@ -13,7 +13,7 @@ import { useUi } from "@/components/layout/UiProvider";
 import { CONTACT } from "@/data/contact";
 import { ImageGalleryCarousel } from "@/components/ImageGalleryCarousel";
 import { useSearchParams } from "next/navigation";
-import { buildChatWithOAUrl } from "@/lib/line";
+import { buildLiffUrl, buildChatWithOAUrl } from "@/lib/line";
 
 type Props = {
   product: Product;
@@ -25,6 +25,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   // const [quantity, setQuantity] = useState(1);
   const [sending, setSending] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   const { locale } = useUi();
   const t = useTranslations();
   const searchParams = useSearchParams();
@@ -51,6 +52,15 @@ export function ProductDetailContent({ product, onClose }: Props) {
   }, [product.id]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
     const liffState = searchParams?.get("liff.state");
     if (liffState) {
       initLiff({ liffId });
@@ -71,6 +81,11 @@ export function ProductDetailContent({ product, onClose }: Props) {
     }
     if (!liffId) {
       toast.error(t("productLiffMissing"));
+      return;
+    }
+
+    if (isDesktop) {
+      alert("กรุณาสแกน QR Code ด้านล่างเพื่อสั่งซื้อผ่าน LINE");
       return;
     }
 
@@ -130,6 +145,12 @@ export function ProductDetailContent({ product, onClose }: Props) {
   const colors = product.colors ?? [];
   // const showColors = colors.length > 1;
   const selectedColor = colors[selectedColorIndex];
+  const liffUrl = liffId ? buildLiffUrl(liffId, { id: product.id }) : null;
+  const qrCodeUrl = liffUrl
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+        liffUrl,
+      )}`
+    : null;
   const galleryImages = selectedColor?.image
     ? [selectedColor.image, ...product.images.filter((img) => img !== selectedColor.image)]
     : product.images;
@@ -273,26 +294,44 @@ export function ProductDetailContent({ product, onClose }: Props) {
             </div> */}
 
             <div className="flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={handleSendOrder}
-                disabled={sending || liffInitializing}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-4 py-3 text-[var(--primary-foreground)] shadow-sm transition hover:bg-[#9f1c1d] disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {sending
-                  ? t("productSending")
-                  : liffInitializing
-                    ? t("productConnectingLine")
-                    : t("productSendButton")}
-              </button>
-              <a
-                href={`tel:${CONTACT.phone}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-[var(--border)] px-4 py-3 text-[var(--foreground)] transition hover:border-white/30"
-              >
-                {t("productCallButton")}
-              </a>
+              <div className="flex flex-1 flex-col gap-3">
+                <button
+                  type="button"
+                  onClick={handleSendOrder}
+                  disabled={sending || liffInitializing}
+                  className="flex items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-4 py-3 text-[var(--primary-foreground)] shadow-sm transition hover:bg-[#9f1c1d] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {sending
+                    ? t("productSending")
+                    : liffInitializing
+                      ? t("productConnectingLine")
+                      : t("productSendButton")}
+                </button>
+                {isDesktop && qrCodeUrl && (
+                  <div className="flex flex-col items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)]/60 p-3">
+                    <img
+                      src={qrCodeUrl}
+                      alt={`${product.name} LINE QR`}
+                      className="h-36 w-36"
+                      loading="lazy"
+                    />
+                    <span className="text-xs text-[var(--muted)]">
+                      สแกน QR Code เพื่อสั่งซื้อผ่าน LINE
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-1 flex-col gap-2">
+                <a
+                  href={`tel:${CONTACT.phone}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 rounded-lg border border-[var(--border)] px-4 py-3 text-[var(--foreground)] transition hover:border-white/30"
+                >
+                  {t("contactPhone")}
+                </a>
+                <span className="text-center text-xs text-[var(--muted)]">{CONTACT.phone}</span>
+              </div>
             </div>
           </section>
         </div>
