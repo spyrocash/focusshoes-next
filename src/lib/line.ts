@@ -4,5 +4,5 @@ export function buildLiffUrl(liffId: string, params: Record<string, string>) {
 }
 
 export function buildChatWithOAUrl(liffId: string, text: string) {
-  return `https://line.me/R/oaMessage/${encodeURIComponent(liffId)}?${text}`;
+  return `https://line.me/R/oaMessage/${encodeURIComponent(liffId)}/?${text}`;
 }
