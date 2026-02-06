@@ -38,6 +38,20 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
   const liffId = process.env.NEXT_PUBLIC_PRODUCT_DETAIL_LIFF_ID;
 
+  const priceDisplay = formatNumber(Number(product.price), locale);
+  const messageArray = [
+    t("productOrderTitle"),
+    `${t("productOrderItem")}: ${product.name}`,
+    `${t("productOrderCategory")}: ${product.category}`,
+    `${t("productOrderPrice")}: ฿${priceDisplay}`,
+    `${t("productOrderSize")}: EU ${selectedSize}`,
+    `${t("productOrderSku")}: ${product.id}`,
+  ];
+
+  const messageText = messageArray.join("\n");
+
+  const encodedMessageText = encodeURIComponent(messageText);
+
   const translateLiffError = (error: string) => {
     if (error === "โหมดพัฒนา: ปิดการเชื่อมต่อ LIFF") return t("productLiffDevDisabled");
     if (error === "ยังไม่ได้ตั้งค่า LIFF ID") return t("productLiffMissing");
@@ -79,10 +93,6 @@ export function ProductDetailContent({ product, onClose }: Props) {
   }, [liffInitError, t]);
 
   const handleSendOrder = async () => {
-    if (!isMobile) {
-      alert("กรุณาสแกน QR Code ด้านล่างเพื่อสั่งซื้อผ่าน LINE");
-      return;
-    }
     if (!selectedSize) {
       toast.error(t("productSelectSizeError"));
       return;
@@ -91,28 +101,18 @@ export function ProductDetailContent({ product, onClose }: Props) {
       toast.error(t("productLiffMissing"));
       return;
     }
+    if (!isMobile) {
+      alert("กรุณาสแกน QR Code ด้านล่างเพื่อสั่งซื้อผ่าน LINE");
+      return;
+    }
 
     setSending(true);
 
     try {
-      const priceDisplay = formatNumber(Number(product.price), locale);
-      const messageArray = [
-        t("productOrderTitle"),
-        `${t("productOrderItem")}: ${product.name}`,
-        `${t("productOrderCategory")}: ${product.category}`,
-        `${t("productOrderPrice")}: ฿${priceDisplay}`,
-        `${t("productOrderSize")}: EU ${selectedSize}`,
-        `${t("productOrderSku")}: ${product.id}`,
-      ];
-
-      const messageText = messageArray.join(" ");
-
-      const encodedText = encodeURIComponent(messageText);
-
       if (!liff.isInClient()) {
         toast(t("productRedirectToLine"));
-        const liffUrl = buildChatWithOAUrl(CONTACT.lineId, encodedText);
-        window.location.href = liffUrl;
+        const url = buildChatWithOAUrl(CONTACT.lineId, encodedMessageText);
+        window.location.href = url;
         window.setTimeout(() => {
           toast.error(t("productRedirectFallback"));
           window.location.href = CONTACT.lineUrl;
@@ -133,7 +133,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
         return;
       }
 
-      await liff.sendMessages([{ type: "text", text: encodedText }]);
+      await liff.sendMessages([{ type: "text", text: encodedMessageText }]);
       toast.success(t("productMessageSent"));
       liff.closeWindow();
     } catch (error: unknown) {
@@ -148,11 +148,10 @@ export function ProductDetailContent({ product, onClose }: Props) {
   const colors = product.colors ?? [];
   // const showColors = colors.length > 1;
   const selectedColor = colors[selectedColorIndex];
-  const liffUrl = liffId ? buildLiffUrl(liffId, { id: product.id }) : null;
-  const qrCodeUrl = liffUrl
-    ? `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
-        liffUrl,
-      )}`
+  // const liffUrl = liffId ? buildLiffUrl(liffId, { id: product.id }) : null;
+  const url = buildChatWithOAUrl(CONTACT.lineId, encodedMessageText);
+  const qrCodeUrl = url
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${url}`
     : null;
   const galleryImages = selectedColor?.image
     ? [selectedColor.image, ...product.images.filter((img) => img !== selectedColor.image)]
