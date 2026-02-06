@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import type { Product } from "@/mocks/products";
 import { ProductDetailContent } from "./ProductDetailContent";
 
@@ -9,11 +10,25 @@ type Props = {
 };
 
 export function ProductDetailModal({ product, onClose }: Props) {
+  useEffect(() => {
+    const { body, documentElement } = document;
+    const previousBodyOverflow = body.style.overflow;
+    const previousHtmlOverflow = documentElement.style.overflow;
+
+    body.style.overflow = "hidden";
+    documentElement.style.overflow = "hidden";
+
+    return () => {
+      body.style.overflow = previousBodyOverflow;
+      documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, []);
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
       <div className="absolute inset-0 bg-black/60 backdrop-blur" onClick={onClose} />
 
-      <div className="relative h-full w-full overflow-y-auto border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] shadow-[0_24px_60px_rgba(0,0,0,0.35)] lg:h-[90vh] lg:w-[min(1024px,92vw)] lg:rounded-3xl">
+      <div className="relative h-full w-full touch-pan-y overflow-y-auto overscroll-contain border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] shadow-[0_24px_60px_rgba(0,0,0,0.35)] lg:h-[90vh] lg:w-[min(1024px,92vw)] lg:rounded-3xl">
         <ProductDetailContent product={product} onClose={onClose} />
       </div>
     </div>
