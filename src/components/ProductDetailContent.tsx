@@ -61,6 +61,15 @@ export function ProductDetailContent({ product, onClose }: Props) {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isDesktop) return;
+    if (!liffId) return;
+    if (liff.isInClient()) return;
+    const liffUrl = buildLiffUrl(liffId, { id: product.id });
+    window.location.href = liffUrl;
+  }, [isDesktop, liffId, product.id]);
+
+  useEffect(() => {
     const liffState = searchParams?.get("liff.state");
     if (liffState) {
       initLiff({ liffId });
@@ -102,7 +111,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
         `${t("productOrderSku")}: ${product.id}`,
       ];
 
-      const messageText = messageArray.join("\n");
+      const messageText = messageArray.join(" ");
 
       const encodedText = encodeURIComponent(messageText);
 
