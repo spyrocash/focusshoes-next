@@ -66,6 +66,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
     if (!liffId) return;
     if (liff.isInClient()) return;
     const liffUrl = buildLiffUrl(liffId, { id: product.id });
+    alert(liffUrl)
     window.location.href = liffUrl;
   }, [isDesktop, liffId, product.id]);
 
@@ -118,6 +119,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
       if (!liff.isInClient()) {
         toast(t("productRedirectToLine"));
         const liffUrl = buildChatWithOAUrl(CONTACT.lineId, encodedText);
+        alert(liffUrl)
         window.location.href = liffUrl;
         window.setTimeout(() => {
           toast.error(t("productRedirectFallback"));
