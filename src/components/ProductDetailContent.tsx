@@ -78,18 +78,22 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
     try {
       const priceDisplay = formatNumber(Number(product.price), locale);
-      const messageText = [
+      const messageArray = [
         t("productOrderTitle"),
         `${t("productOrderItem")}: ${product.name}`,
         `${t("productOrderCategory")}: ${product.category}`,
         `${t("productOrderPrice")}: ฿${priceDisplay}`,
         `${t("productOrderSize")}: EU ${selectedSize}`,
         `${t("productOrderSku")}: ${product.id}`,
-      ].join("\n");
+      ];
+
+      const messageText = messageArray.join("\n");
+
+      const encodedText = encodeURIComponent(messageText);
 
       if (!liff.isInClient()) {
         toast(t("productRedirectToLine"));
-        const liffUrl = buildChatWithOAUrl(liffId, messageText);
+        const liffUrl = buildChatWithOAUrl(liffId, encodedText);
         window.location.href = liffUrl;
         window.setTimeout(() => {
           toast.error(t("productRedirectFallback"));
@@ -111,7 +115,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
         return;
       }
 
-      await liff.sendMessages([{ type: "text", text: messageText }]);
+      await liff.sendMessages([{ type: "text", text: encodedText }]);
       toast.success(t("productMessageSent"));
       liff.closeWindow();
     } catch (error: unknown) {
@@ -124,7 +128,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
   const showClose = Boolean(onClose);
   const colors = product.colors ?? [];
-  const showColors = colors.length > 1;
+  // const showColors = colors.length > 1;
   const selectedColor = colors[selectedColorIndex];
   const galleryImages = selectedColor?.image
     ? [selectedColor.image, ...product.images.filter((img) => img !== selectedColor.image)]
