@@ -65,18 +65,18 @@ export function ProductDetailContent({ product, onClose }: Props) {
     setSelectedColorIndex(0);
   }, [product.id]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!isMobile) return;
-    const liffState = searchParams?.get("liff.state");
-    if (liffState) return;
-    if (!liffId) return;
-    if (liff.isInClient()) return;
-    if (window.sessionStorage.getItem("liff_redirected") === "1") return;
-    const liffUrl = buildLiffUrl(liffId, { id: product.id });
-    window.sessionStorage.setItem("liff_redirected", "1");
-    window.location.href = liffUrl;
-  }, [isMobile, liffId, product.id, searchParams]);
+  // useEffect(() => {
+  //   if (typeof window === "undefined") return;
+  //   if (!isMobile) return;
+  //   const liffState = searchParams?.get("liff.state");
+  //   if (liffState) return;
+  //   if (!liffId) return;
+  //   if (liff.isInClient()) return;
+  //   if (window.sessionStorage.getItem("liff_redirected") === "1") return;
+  //   const liffUrl = buildLiffUrl(liffId, { id: product.id });
+  //   window.sessionStorage.setItem("liff_redirected", "1");
+  //   window.location.href = liffUrl;
+  // }, [isMobile, liffId, product.id, searchParams]);
 
   useEffect(() => {
     const liffState = searchParams?.get("liff.state");
