@@ -332,7 +332,6 @@ export function ProductDetailContent({ product, onClose }: Props) {
                 >
                   {t("contactPhone")}
                 </a>
-                <span className="text-center text-xs text-[var(--muted)]">{CONTACT.phone}</span>
               </div>
             </div>
           </section>
