@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import liff from "@line/liff";
+import { isMobile } from "react-device-detect";
 import type { Product } from "@/mocks/products";
 import { useStoreActions, useStoreState } from "@/stores/hooks";
 import { toast } from "react-hot-toast";
@@ -25,7 +26,6 @@ export function ProductDetailContent({ product, onClose }: Props) {
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   // const [quantity, setQuantity] = useState(1);
   const [sending, setSending] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
   const { locale } = useUi();
   const t = useTranslations();
   const searchParams = useSearchParams();
@@ -53,22 +53,12 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const mediaQuery = window.matchMedia("(min-width: 1024px)");
-    const update = () => setIsDesktop(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (isDesktop) return;
+    if (!isMobile) return;
     if (!liffId) return;
     if (liff.isInClient()) return;
     const liffUrl = buildLiffUrl(liffId, { id: product.id });
-    alert(liffUrl)
     window.location.href = liffUrl;
-  }, [isDesktop, liffId, product.id]);
+  }, [isMobile, liffId, product.id]);
 
   useEffect(() => {
     const liffState = searchParams?.get("liff.state");
@@ -94,7 +84,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
       return;
     }
 
-    if (isDesktop) {
+    if (!isMobile) {
       alert("กรุณาสแกน QR Code ด้านล่างเพื่อสั่งซื้อผ่าน LINE");
       return;
     }
@@ -119,7 +109,6 @@ export function ProductDetailContent({ product, onClose }: Props) {
       if (!liff.isInClient()) {
         toast(t("productRedirectToLine"));
         const liffUrl = buildChatWithOAUrl(CONTACT.lineId, encodedText);
-        alert(liffUrl)
         window.location.href = liffUrl;
         window.setTimeout(() => {
           toast.error(t("productRedirectFallback"));
@@ -318,7 +307,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
                       ? t("productConnectingLine")
                       : t("productSendButton")}
                 </button>
-                {isDesktop && qrCodeUrl && (
+                {!isMobile && qrCodeUrl && (
                   <div className="flex flex-col items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)]/60 p-3">
                     <img
                       src={qrCodeUrl}
