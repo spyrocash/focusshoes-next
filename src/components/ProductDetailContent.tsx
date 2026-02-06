@@ -79,17 +79,16 @@ export function ProductDetailContent({ product, onClose }: Props) {
   }, [liffInitError, t]);
 
   const handleSendOrder = async () => {
+    if (!isMobile) {
+      alert("กรุณาสแกน QR Code ด้านล่างเพื่อสั่งซื้อผ่าน LINE");
+      return;
+    }
     if (!selectedSize) {
       toast.error(t("productSelectSizeError"));
       return;
     }
     if (!liffId) {
       toast.error(t("productLiffMissing"));
-      return;
-    }
-
-    if (!isMobile) {
-      alert("กรุณาสแกน QR Code ด้านล่างเพื่อสั่งซื้อผ่าน LINE");
       return;
     }
 
