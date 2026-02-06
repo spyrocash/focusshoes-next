@@ -93,7 +93,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
       if (!liff.isInClient()) {
         toast(t("productRedirectToLine"));
-        const liffUrl = buildChatWithOAUrl(liffId, encodedText);
+        const liffUrl = buildChatWithOAUrl(CONTACT.lineId, encodedText);
         window.location.href = liffUrl;
         window.setTimeout(() => {
           toast.error(t("productRedirectFallback"));
