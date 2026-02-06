@@ -13,7 +13,7 @@ import { useUi } from "@/components/layout/UiProvider";
 import { CONTACT } from "@/data/contact";
 import { ImageGalleryCarousel } from "@/components/ImageGalleryCarousel";
 import { useSearchParams } from "next/navigation";
-import { buildLiffUrl } from "@/lib/line";
+import { buildChatWithOAUrl } from "@/lib/line";
 
 type Props = {
   product: Product;
@@ -77,9 +77,19 @@ export function ProductDetailContent({ product, onClose }: Props) {
     setSending(true);
 
     try {
+      const priceDisplay = formatNumber(Number(product.price), locale);
+      const messageText = [
+        t("productOrderTitle"),
+        `${t("productOrderItem")}: ${product.name}`,
+        `${t("productOrderCategory")}: ${product.category}`,
+        `${t("productOrderPrice")}: ฿${priceDisplay}`,
+        `${t("productOrderSize")}: EU ${selectedSize}`,
+        `${t("productOrderSku")}: ${product.id}`,
+      ].join("\n");
+
       if (!liff.isInClient()) {
         toast(t("productRedirectToLine"));
-        const liffUrl = buildLiffUrl(liffId, { id: product.id });
+        const liffUrl = buildChatWithOAUrl(liffId, messageText);
         window.location.href = liffUrl;
         window.setTimeout(() => {
           toast.error(t("productRedirectFallback"));
@@ -100,16 +110,6 @@ export function ProductDetailContent({ product, onClose }: Props) {
         liff.login();
         return;
       }
-
-      const priceDisplay = formatNumber(Number(product.price), locale);
-      const messageText = [
-        t("productOrderTitle"),
-        `${t("productOrderItem")}: ${product.name}`,
-        `${t("productOrderCategory")}: ${product.category}`,
-        `${t("productOrderPrice")}: ฿${priceDisplay}`,
-        `${t("productOrderSize")}: EU ${selectedSize}`,
-        `${t("productOrderSku")}: ${product.id}`,
-      ].join("\n");
 
       await liff.sendMessages([{ type: "text", text: messageText }]);
       toast.success(t("productMessageSent"));
@@ -201,9 +201,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
 
             {colors.length > 0 && (
               <div className="space-y-3">
-                <h3 className="font-medium text-[var(--foreground)]">
-                  {t("productColorTitle")}
-                </h3>
+                <h3 className="font-medium text-[var(--foreground)]">{t("productColorTitle")}</h3>
                 <div className="flex flex-wrap items-center gap-2">
                   {colors.map((color, index) => (
                     <button
