@@ -133,7 +133,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
         return;
       }
 
-      await liff.sendMessages([{ type: "text", text: encodedMessageText }]);
+      await liff.sendMessages([{ type: "text", text: messageText }]);
       toast.success(t("productMessageSent"));
       liff.closeWindow();
     } catch (error: unknown) {
