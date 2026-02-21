@@ -41,7 +41,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
   const priceDisplay = formatNumber(Number(product.price), locale);
   const messageArray = [
     t("productOrderTitle"),
-    `${t("productOrderItem")}: ${product.name}`,
+    `${t("productOrderItem")}: ${product.id}`,
     `${t("productOrderCategory")}: ${product.category}`,
     `${t("productOrderPrice")}: ฿${priceDisplay}`,
     `${t("productOrderSize")}: EU ${selectedSize}`,
@@ -173,7 +173,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
             <XIcon className="h-5 w-5" />
           </Link>
         )}
-        <div className="text-sm text-[var(--muted)]">{product.name}</div>
+        <div className="text-sm text-[var(--muted)]">รหัส: {product.id}</div>
         <div className="w-9" />
       </header>
 
@@ -199,7 +199,9 @@ export function ProductDetailContent({ product, onClose }: Props) {
           <section className="space-y-4 p-4 lg:pt-6">
             <div>
               <div className="mb-1 text-sm text-[var(--muted)]">{product.category}</div>
-              <h2 className="text-xl font-semibold text-[var(--foreground)]">{product.name}</h2>
+              <h2 className="text-xl font-semibold text-[var(--foreground)]">
+                รหัส: {product.id}
+              </h2>
             </div>
 
             <div className="flex items-end gap-2">

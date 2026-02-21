@@ -22,6 +22,7 @@ export type ProductCardProps = {
 };
 
 export function ProductCard({
+  id,
   name,
   price,
   image,
@@ -70,7 +71,7 @@ export function ProductCard({
         </div>
         <div className="p-1 text-[var(--foreground)]">
           <h3 className="line-clamp-2 text-sm font-medium text-[var(--foreground)]">
-            {name}
+            รหัส: {id}
           </h3>
           {showColors && (
             <div className="mt-1 flex items-center gap-1">
@@ -131,7 +132,7 @@ export function ProductCard({
       </div>
       <div className="p-1 text-[var(--foreground)]">
         <h3 className="line-clamp-2 text-sm font-medium text-[var(--foreground)]">
-          {name}
+          รหัส: {id}
         </h3>
         {showColors && (
           <div className="mt-1 flex items-center gap-1">
