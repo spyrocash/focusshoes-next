@@ -41,11 +41,9 @@ export function ProductDetailContent({ product, onClose }: Props) {
   const priceDisplay = formatNumber(Number(product.price), locale);
   const messageArray = [
     t("productOrderTitle"),
-    `${t("productOrderItem")}: ${product.id}`,
-    `${t("productOrderCategory")}: ${product.category}`,
-    `${t("productOrderPrice")}: ฿${priceDisplay}`,
-    `${t("productOrderSize")}: EU ${selectedSize}`,
     `${t("productOrderSku")}: ${product.id}`,
+    `${t("productOrderSize")}: EU ${selectedSize}`,
+    `${t("productOrderPrice")}: ฿${priceDisplay}`,
   ];
 
   const messageText = messageArray.join("\n");
