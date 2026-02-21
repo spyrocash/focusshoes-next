@@ -42,7 +42,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
   const messageArray = [
     t("productOrderTitle"),
     `${t("productOrderSku")}: ${product.id}`,
-    `${t("productOrderSize")}: EU ${selectedSize}`,
+    `${t("productOrderSize")}: ${selectedSize}`,
     `${t("productOrderPrice")}: ฿${priceDisplay}`,
   ];
 
@@ -268,7 +268,7 @@ export function ProductDetailContent({ product, onClose }: Props) {
                         : "border-[var(--border)] text-[var(--muted)] hover:border-white/20"
                     }`}
                   >
-                    EU {size}
+                    {size}
                   </button>
                 ))}
               </div>
